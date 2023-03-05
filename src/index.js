@@ -246,8 +246,10 @@ export default function example() {
     function mouseEvent(event) {
         mouseX = event.clientX;
         mouseY = event.clientY;
-        console.log(mouseX, mouseY) 
+        console.log(mouseX, mouseY);
     }
+    console.log('hi');
+    console.log('hello');
 
     document.addEventListener('mousemove', mouseEvent)
 	// 이벤트
