@@ -7,15 +7,20 @@ body {
 	top: 0;
 	z-index: -1;
 }
-.text-item {
+.scroll-item {
 	height: 100vh;
 	color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
-.text-item h2 {
-	font-size: 12vmin;
+.scroll-item div {
+	height: 200px;
+	display: flex;
+	align-items: center;
 }
 
-.text-item h2 {
-	font-size: 30vmin;
+.scroll-item h2 {
+	text-align: center;
 }

@@ -65,7 +65,7 @@ export default function example() {
 
 
     // Controls 
-    // const controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControls(camera, renderer.domElement);
 
 	// Light
 	const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
@@ -195,38 +195,27 @@ export default function example() {
         'pz.png', 'nz.png'
     ]);
 
-    // scene.background = cubeTexture;
-
-    // scene
-	// AxesHelper
-	// const axesHelper = new THREE.AxesHelper(3);
-	// scene.add(axesHelper);
-
-	// // GridHelper
-	// const gridHelper = new THREE.GridHelper(10);
-	// scene.add(gridHelper);
-
 	// Dat GUI
-	const gui = new dat.GUI();
-	gui.add(camera.position, 'x', -5, 5, 0.1).name('카메라 X');
-	gui.add(camera.position, 'y', -5, 5, 0.1).name('카메라 Y');
-	gui.add(camera.position, 'z', 2, 10, 0.1).name('카메라 Z');
+	// const gui = new dat.GUI();
+	// gui.add(camera.position, 'x', -5, 5, 0.1).name('카메라 X');
+	// gui.add(camera.position, 'y', -5, 5, 0.1).name('카메라 Y');
+	// gui.add(camera.position, 'z', 2, 10, 0.1).name('카메라 Z');
 
 	// 그리기
     
     let moveX;
     let moveY;
-
 	const clock = new THREE.Clock();
 	function draw() {
 		const delta = clock.getDelta();
 
         moveX += (mouseX - moveX - window.innerWidth / 2) * 0.05;
-        moveY = (mouseY - moveY - window.innerHeight / 2) * 0.05;
+        moveY += (mouseY - moveY - window.innerHeight / 2) * 0.05;
 
         if(logoMesh) {
             logoMesh.position.x = -(moveX / 50);
             logoMesh.position.y = moveY / 50;
+            console.log(logoMesh.position.x)
         }
 
 		renderer.render(scene, camera);
@@ -246,7 +235,6 @@ export default function example() {
     function mouseEvent(event) {
         mouseX = event.clientX;
         mouseY = event.clientY;
-        console.log(mouseX, mouseY);
     }
 
     document.addEventListener('mousemove', mouseEvent)
