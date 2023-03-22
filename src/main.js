@@ -1,3 +1,3 @@
-import example from './index2';
+import example from './index4';
 
 example();
