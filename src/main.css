@@ -24,3 +24,37 @@ body {
 .scroll-item h2 {
 	text-align: center;
 }
+
+.projectName {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	padding: 10%;
+	box-sizing: border-box;
+}
+
+.projectNameDetail {
+	width: 60vw;
+	height: 20vw;
+	overflow: auto;
+	background: #fff;
+	border-radius: 5px;
+	box-shadow: 0 0 20px rgba(0,0,0,0.16);
+	font-size: 25px;
+	color: #000;
+	text-align: center;
+	padding: 5%;
+	display:flex;
+	flex-direction : column;
+	justify-content: space-between;
+}
+
+.back {
+	width: 100%;
+	font-size: 24px;
+}

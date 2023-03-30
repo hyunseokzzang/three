@@ -58,6 +58,44 @@ export default function example() {
     directionalLight.castShadow = true;
 	scene.add(directionalLight);
 
+    
+    //loader
+    let logoMesh; 
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.load(
+        '/images/mx_logo.gltf', 
+        gltf => {
+            logoMesh = gltf.scene.children[0];
+            scene.add(logoMesh)
+        }
+    )
+    let mouseCharacter;
+    let mixer;
+    gltfLoader.load(
+        '/images/mouse6.glb',
+        glb => {
+            mouseCharacter = glb.scene.children[0];
+            mouseCharacter.position.set(0, 0, 0)
+            mouseCharacter.scale.set(0.005, 0.005, 0.005);
+
+            const pointsGeometry = mouseCharacter.geometry; 
+            const pointsMaterial = new THREE.PointsMaterial({
+                size: 0.01,
+                color : '#fff'
+            });
+
+            const points = new THREE.Points(pointsGeometry, pointsMaterial)
+            
+            scene.add(points);
+            // mixer = new THREE.AnimationMixer(mouseCharacter);
+            // const actions = [];
+            // actions[0] = mixer.clipAction(mouseCharacter.animations[0]);
+            // actions[1] = mixer.clipAction(mouseCharacter.animations[1]);
+
+            // actions[0].play();
+
+        }
+    )
 
 	// Mesh
 	const geometry = new THREE.BoxGeometry(1, 1, 1);
