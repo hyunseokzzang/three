@@ -1,10 +1,6 @@
 import * as THREE from 'three';
-import {
-    OrbitControls
-} from 'three/examples/jsm/controls/OrbitControls';
-import {
-    GLTFLoader
-} from 'three/examples/jsm/loaders/GLTFLoader';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import dat from 'dat.gui';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
@@ -24,10 +20,11 @@ export default function example() {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.5;
     renderer.outputEncoding = THREE.sRGBEncoding;
+
     // Scene
     const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog('white', 0, 500)
-    scene.background = new THREE.Color('#fff')
+    scene.fog = new THREE.Fog('white', -50, 500)
+    // scene.background = new THREE.Color('#fff')
     // Camera
     const camera = new THREE.PerspectiveCamera(
         75,
@@ -35,7 +32,7 @@ export default function example() {
         0.1,
         1000
     );
-    camera.position.set(0, 0, 50)
+    camera.position.set(0, 0, 0)
     camera.rotation.set(0, 0, 0)
 
 
@@ -78,8 +75,8 @@ export default function example() {
     console.log(particleGeometry)
 
     const particleMaterial = new THREE.PointsMaterial({
-        size: 1,
-        vertexColors: true,
+        size: 0.5,
+        // vertexColors: true,
         // color: 'blue',
         map: bright,
         transparent: true,
@@ -89,12 +86,11 @@ export default function example() {
     });
 
     const particleMesh = new THREE.Points(particleGeometry, particleMaterial);
-    const particleMesh2 = new THREE.Points(particleGeometry, particleMaterial);
 
     const depthNum = 50; //박스와 박스 사이 z값. 깊이
     let targetZNum = 0; //
     let moveZ = 0;
-    let totalNum = 16;
+    let totalNum = 18;
     const boxGroup = new THREE.Group();
     const meshes = [];
     const projectName = [
@@ -113,52 +109,59 @@ export default function example() {
         '지란지교소프트',
         '청와대_국민품으로',
         '충청남도관광재단',
-        '타운보드TV'
+        '타운보드TV',
+        '보노보노',
     ]
 
-    function cover( texture, aspect ) {
-
-        var imageAspect = texture.image.width / texture.image.height;
-    
-        if ( aspect < imageAspect ) {
-    
-                texture.matrix.setUvTransform( 0, 0, aspect / imageAspect, 1, 0, 0.5, 0.5 );
-    
-        } else {
-    
-                texture.matrix.setUvTransform( 0, 0, 1, imageAspect / aspect, 0, 0.5, 0.5 );
-    
-        }
-    
-    }
     const addBox = (i) => {
-        const texture = new THREE.TextureLoader().load(
-            "./images/project/img" + i + '.JPG',
-            () => {
-                cover(texture, window.innerWidth / window.innerHeight);
-            }
-        );
-       
-
+        
+        let material;
+        let boxMesh;
+        let x;
+        let y;
+        
         const geometry = new THREE.BoxBufferGeometry(24, 24, 0.1);
-        const material = new THREE.MeshPhongMaterial({
-            map: texture,
-        });
-        const boxMesh = new THREE.Mesh(geometry, material);
+
+        if(i <= 16) { 
+
+            const texture = new THREE.TextureLoader().load(
+                "./images/project/img" + i + '.JPG',
+            );
+
+            material = new THREE.MeshPhongMaterial({
+                map: texture,
+            });
+
+            boxMesh = new THREE.Mesh(geometry, material);
+
+            x = Math.random() * 100 - 100 / 2;
+            y = Math.random() * 100 - 100 / 2;
+
+        } else {
+            
+            const texture2 = new THREE.TextureLoader().load(
+                "./images/project/img" + i + '.png',
+            );
+
+            material = new THREE.MeshPhongMaterial({
+                map: texture2,
+                transparent: true,
+                // alphaMap: bright,
+            });
+
+            boxMesh = new THREE.Mesh(geometry, material);
+
+            x = 0;
+            y = boxMesh.geometry.parameters.height / 2;
+            // console.log()
+        }
+       
         boxMesh.name = projectName[i]
         boxMesh.castShadow = true;
 
         // let x = Math.random() * 100 - 100 / 2;
         // let y = Math.random() * 100 - 100 / 2;
-        let x;
-
-        if ((i % 2) > 0) {
-            x = -30
-        } else {
-            x = 30
-        }
-
-        let y = 0;
+      
         let z = -i * depthNum;
         boxMesh.position.set(x, y, z);
         // boxMesh.rotation.set(x, y, z);
@@ -179,16 +182,20 @@ export default function example() {
         moveX = 0,
         moveY = 0;
 
-    gsap.to(
-        particleMesh.rotation, {
-            x: 360,
-            duration: 360,
-            repeat: -1,
-            delay: 0,
-            ease: 'linear',
-            repeatDelay: 0
-        }
-    )
+    let modelingPosition;
+    let modeling;
+
+    // const gltfLoader = new GLTFLoader();
+    // gltfLoader.load('/images/mx_intro_test.glb',
+    //     glb => {
+    //         modeling = glb.scene.children[0];
+    //         scene.add(modeling);
+
+    //         console.log(modeling)
+    //     }
+    // )
+
+
 
     const clock = new THREE.Clock();
 
@@ -216,18 +223,33 @@ export default function example() {
         renderer.render(scene, camera);
     }
 
-    const scrollFunc = (event) => {
-        console.log(event.deltaY);
-        if (event.deltaY <= -100) {
-            if (targetZNum > 0 && checkClick == false) {
-                targetZNum -= depthNum;
-            }
-        } else {
-            if (targetZNum < totalNum * depthNum && checkClick == false) {
-                targetZNum += depthNum;
-            }
-        }
+    let scrolly = 0;
+    let pageNum = 0;
+    const progressBar = document.querySelector('.bar');
+    let perNum = 0;
+    const scrollFunc = () => {
+        // console.log(event.deltaY);
+        // if (event.deltaY <= -100) {
+        //     if (targetZNum > 0 && checkClick == false) {
+        //         targetZNum -= depthNum;
+        //     }
+        // } else {
+        //     if (targetZNum < totalNum * depthNum && checkClick == false) {
+        //         targetZNum += depthNum;
+        //     }
+        // }
         // console.log(targetZNum);
+        scrolly = window.scrollY;
+        pageNum = Math.ceil(scrolly / 100);
+        targetZNum = depthNum * pageNum;
+
+        perNum = Math.ceil(
+            (scrolly / (document.body.offsetHeight - window.innerHeight)) * 100
+        );
+
+        progressBar.style.width = perNum + '%'
+        console.log(scrolly)
+        console.log(pageNum)
     };
 
     const raycaster = new THREE.Raycaster();
@@ -252,22 +274,22 @@ export default function example() {
             };
 
 
-            gsap.to(
-                item.object.scale, {
-                    x: window.innerWidth * 0.005,
-                    y: window.innerHeight * 0.005,
-                    duration: 1
-                }
-            );
+            // gsap.to(
+            //     item.object.scale, {
+            //         x: window.innerWidth * 0.0005,
+            //         y: window.innerHeight * 0.0005,
+            //         duration: 1
+            //     }
+            // );
 
-            gsap.to(
-                item.object.position, {
-                    z: -moveZ,
-                    x: 0,
-                    y: 0,
-                    duration: 1
-                }
-            )
+            // gsap.to(
+            //     item.object.position, {
+            //         z: -(depthNum * pageNum),
+            //         x: 0,
+            //         y: 0,
+            //         duration: 1
+            //     }
+            // )
 
 
             const makeElement = document.createElement('div');
@@ -336,7 +358,6 @@ export default function example() {
 
     }
 
-
     canvas.addEventListener('click', e => {
         mouse.x = e.clientX / canvas.clientWidth * 2 - 1; //3d환경 마우스 위치 구하기
         mouse.y = -(e.clientY / canvas.clientHeight * 2 - 1); //3d환경 마우스 위치 구하기
@@ -344,10 +365,89 @@ export default function example() {
         checkIntersects();
     })
 
+    const mouseParticle = () => {
+        const particleCanvas = document.getElementById('particle-canvas');
+        const ctx = particleCanvas.getContext('2d');
+        const makes = [];
+        const mouse = {
+            x : undefined,
+            y : undefined
+        }
+        let hue = 0;
+        particleCanvas.width = window.innerWidth;
+        particleCanvas.height = window.innerHeight;
 
+        class Particle {
+            constructor() {
+                this.x = mouse.x;
+                this.y = mouse.y;
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * 3 - 1.5;
+                this.size = Math.random() * 15 + 1;
+                this.color = `hsl(${hue}, 100% , 50%)` 
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.fillStyle = this.color;
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        const initParticles = () => {
+            for (let i = 0; i < 2; i++) {
+                const make = new Particle();
+                makes.push(make);
+            }
+        }
+
+        const handleParticles = () => {
+            for (let i = 0; i < makes.length; i++) {
+                const make = makes[i];
+                make.update();
+                make.draw();
+                if (make.size < 0.2) {
+                    makes.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+
+        const particleAnimate = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            handleParticles();
+            hue += 10;
+            requestAnimationFrame(particleAnimate)
+        }
+
+        particleAnimate();
+
+        const handleEvents = (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+            
+            initParticles();
+        }
+
+        // particleCanvas.addEventListener('click', handleEvents)
+        particleCanvas.addEventListener('mousemove', handleEvents)
+    }
+
+    // mouseParticle();
+    
+
+
+    document.body.style.height = window.innerHeight + totalNum * 100 + 'px'
     // 이벤트
+    window.addEventListener('scroll', scrollFunc);
     window.addEventListener('resize', setSize);
-    window.addEventListener("wheel", scrollFunc);
     window.addEventListener("mousemove", (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;

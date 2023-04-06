@@ -5,7 +5,7 @@ body {
 	position: fixed;
 	left: 0;
 	top: 0;
-	z-index: -1;
+	/* z-index: -1; */
 }
 .scroll-item {
 	height: 100vh;
@@ -57,4 +57,22 @@ body {
 .back {
 	width: 100%;
 	font-size: 24px;
+}
+
+.progress {
+	position: fixed;
+	width: 100vw;
+	height: 5px;
+	top: 0;
+	background: #666;
+	z-index: 10;
+}
+
+.bar {
+	position: absolute;
+	width: 0;
+	height: 5px;
+	top: 0;
+	background: yellow;
+	transition: width .2s ease-out;
 }
