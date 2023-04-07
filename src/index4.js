@@ -23,7 +23,7 @@ export default function example() {
 
     // Scene
     const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog('white', -50, 500)
+    scene.fog = new THREE.Fog('#000', -50, 500)
     // scene.background = new THREE.Color('#fff')
     // Camera
     const camera = new THREE.PerspectiveCamera(
@@ -32,7 +32,7 @@ export default function example() {
         0.1,
         1000
     );
-    camera.position.set(0, 0, 0)
+    camera.position.set(0, 0, 20)
     camera.rotation.set(0, 0, 0)
 
 
@@ -75,7 +75,7 @@ export default function example() {
     console.log(particleGeometry)
 
     const particleMaterial = new THREE.PointsMaterial({
-        size: 0.5,
+        size: 0.35,
         // vertexColors: true,
         // color: 'blue',
         map: bright,
@@ -152,7 +152,7 @@ export default function example() {
             boxMesh = new THREE.Mesh(geometry, material);
 
             x = 0;
-            y = boxMesh.geometry.parameters.height / 2;
+            y = boxMesh.geometry.parameters.height / 8;
             // console.log()
         }
        
@@ -185,15 +185,15 @@ export default function example() {
     let modelingPosition;
     let modeling;
 
-    // const gltfLoader = new GLTFLoader();
-    // gltfLoader.load('/images/mx_intro_test.glb',
-    //     glb => {
-    //         modeling = glb.scene.children[0];
-    //         scene.add(modeling);
-
-    //         console.log(modeling)
-    //     }
-    // )
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.load('/images/mx_intro_test.glb',
+        glb => {
+            modeling = glb.scene.children[0];
+            scene.add(modeling);
+            modeling.position.set(0, 0, -100)
+            console.log(modeling)
+        }
+    )
 
 
 
@@ -210,6 +210,11 @@ export default function example() {
         boxGroup.position.x = -(moveX / 50);
         boxGroup.position.y = moveY / 50;
 
+        particleMesh.rotation.y = -.1 * elapsedTime
+        if (mouseX > 0) {
+            particleMesh.rotation.x = -mouseY * (elapsedTime * 0.0002)
+            particleMesh.rotation.y = -mouseX * (elapsedTime * 0.0002)
+        }
         renderer.render(scene, camera);
         renderer.setAnimationLoop(draw);
 
