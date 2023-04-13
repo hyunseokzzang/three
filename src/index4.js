@@ -53,8 +53,9 @@ export default function example() {
     directionalLight.castShadow = true;
     scene.add(directionalLight);
 
-    const loader = new THREE.TextureLoader();
-    const bright = loader.load('./texture/bright.png');
+    const textureLoader = new THREE.TextureLoader();
+    const bright = textureLoader.load('./texture/bright.png');
+
 
     // 그리기
     const particleGeometry = new THREE.BufferGeometry();
@@ -90,7 +91,7 @@ export default function example() {
     const depthNum = 50; //박스와 박스 사이 z값. 깊이
     let targetZNum = 0; //
     let moveZ = 0;
-    let totalNum = 18;
+    let totalNum = 19;
     const boxGroup = new THREE.Group();
     const meshes = [];
     const projectName = [
@@ -120,13 +121,20 @@ export default function example() {
         let x;
         let y;
         
-        const geometry = new THREE.BoxBufferGeometry(24, 24, 0.1);
-
+        const geometry = new THREE.BoxGeometry(24, 24, 0.1);
+        
         if(i <= 16) { 
 
-            const texture = new THREE.TextureLoader().load(
+            const texture = textureLoader.load(
                 "./images/project/img" + i + '.JPG',
             );
+
+            const texture1 = textureLoader.load(
+                "./images/project/img" + (i + 1)+ '.JPG',
+            );
+
+            const textures = [ texture, texture1 ];
+            let currentTexture = 0;
 
             material = new THREE.MeshPhongMaterial({
                 map: texture,
@@ -137,9 +145,9 @@ export default function example() {
             x = Math.random() * 100 - 100 / 2;
             y = Math.random() * 100 - 100 / 2;
 
-        } else {
+        } else if(16 < i && i <= 18) {
             
-            const texture2 = new THREE.TextureLoader().load(
+            const texture2 = textureLoader.load(
                 "./images/project/img" + i + '.png',
             );
 
@@ -154,6 +162,25 @@ export default function example() {
             x = 0;
             y = boxMesh.geometry.parameters.height / 8;
             // console.log()
+        } else {
+            const video = document.createElement('video');
+            video.muted = true;
+            video.autoplay = true;
+            video.loop = true;
+            const videoSource = document.createElement('source');
+            videoSource.src = './texture/video.mp4';
+            video.appendChild(videoSource);
+
+            const vTexture = new THREE.VideoTexture( video );
+            
+            material = new THREE.MeshPhongMaterial({
+                map: vTexture,
+                // alphaMap: bright,
+            });
+
+            boxMesh = new THREE.Mesh(geometry, material);
+            x = 0;
+            y = 0;
         }
        
         boxMesh.name = projectName[i]
@@ -175,7 +202,7 @@ export default function example() {
     }
     scene.add(boxGroup);
     scene.add(particleMesh);
-
+    
 
     let mouseX = 0,
         mouseY = 0,
@@ -191,7 +218,7 @@ export default function example() {
             modeling = glb.scene.children[0];
             scene.add(modeling);
             modeling.position.set(0, 0, -100)
-            console.log(modeling)
+            // console.log(modeling)
         }
     )
 
@@ -215,6 +242,7 @@ export default function example() {
             particleMesh.rotation.x = -mouseY * (elapsedTime * 0.0002)
             particleMesh.rotation.y = -mouseX * (elapsedTime * 0.0002)
         }
+
         renderer.render(scene, camera);
         renderer.setAnimationLoop(draw);
 
@@ -253,19 +281,45 @@ export default function example() {
         );
 
         progressBar.style.width = perNum + '%'
-        console.log(scrolly)
-        console.log(pageNum)
+        // console.log(scrolly)
+        // console.log(pageNum)
     };
 
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     let checkClick = false;
+    
+    const overIntersects = () => {
+        raycaster.setFromCamera(mouse, camera);
+
+        const intersects = raycaster.intersectObjects(meshes);
+
+        for(const item of intersects) {
+            const tl = gsap.timeline();
+            tl.to( item.object.material, {
+                duration: 0.5, 
+                opacity: 0,
+                onComplete : () => {
+                    item.object.material.map = textureLoader.load(
+                        "./images/project/img5.JPG"
+                    );
+                } 
+            })
+            .to( item.object.material, {duration:0.5, opacity: 1,  } );
+            // item.object.material.map = textureLoader.load(
+            //     "./images/project/img5.JPG"
+            // );
+            // console.log('hi')
+        }
+    }
+
     const checkIntersects = () => {
         raycaster.setFromCamera(mouse, camera);
 
         const intersects = raycaster.intersectObjects(meshes);
 
         for (const item of intersects) {
+            // material.map = textures[nextTexture];
             const itemBeforeScale = {
                 x: item.object.scale.x,
                 y: item.object.scale.y,
@@ -367,7 +421,14 @@ export default function example() {
         mouse.x = e.clientX / canvas.clientWidth * 2 - 1; //3d환경 마우스 위치 구하기
         mouse.y = -(e.clientY / canvas.clientHeight * 2 - 1); //3d환경 마우스 위치 구하기
 
-        checkIntersects();
+        // checkIntersects();
+    })
+
+    canvas.addEventListener('mousemove', e => {
+        mouse.x = e.clientX / canvas.clientWidth * 2 - 1; //3d환경 마우스 위치 구하기
+        mouse.y = -(e.clientY / canvas.clientHeight * 2 - 1); //3d환경 마우스 위치 구하기
+
+        overIntersects();
     })
 
     const mouseParticle = () => {
