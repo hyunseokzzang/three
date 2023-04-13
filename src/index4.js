@@ -167,6 +167,7 @@ export default function example() {
             video.muted = true;
             video.autoplay = true;
             video.loop = true;
+            video.play();
             const videoSource = document.createElement('source');
             videoSource.src = './texture/video.mp4';
             video.appendChild(videoSource);
