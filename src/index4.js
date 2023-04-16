@@ -23,8 +23,8 @@ export default function example() {
 
     // Scene
     const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog('#000', -50, 500)
-    // scene.background = new THREE.Color('#fff')
+    scene.fog = new THREE.Fog('#fff', 0, 500)
+    scene.background = new THREE.Color('gray')
     // Camera
     const camera = new THREE.PerspectiveCamera(
         75,
@@ -32,7 +32,7 @@ export default function example() {
         0.1,
         1000
     );
-    camera.position.set(0, 0, 20)
+    camera.position.set(0, 0, 50)
     camera.rotation.set(0, 0, 0)
 
 
@@ -43,187 +43,194 @@ export default function example() {
     // const controls = new OrbitControls(camera, renderer.domElement);
 
     // Light
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
-    scene.add(ambientLight);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    // const ambientLightGuide = new THREE.AmbientLightGuide();
+    // scene.add(ambientLight);
+    
 
-    const directionalLight = new THREE.PointLight('gray', 1);
+    const directionalLight = new THREE.DirectionalLight('#fff', 0.75);
     directionalLight.position.x = 0;
-    directionalLight.position.y = 1;
-    directionalLight.position.z = 0;
+    directionalLight.position.y = 50;
+    directionalLight.position.z = 30;
     directionalLight.castShadow = true;
+    const directionalLightGuide = new THREE.DirectionalLightHelper(directionalLight);
     scene.add(directionalLight);
+    scene.add(directionalLightGuide)
 
     const textureLoader = new THREE.TextureLoader();
     const bright = textureLoader.load('./texture/bright.png');
 
 
     // 그리기
-    const particleGeometry = new THREE.BufferGeometry();
-    const particleCount = 2000;
-
-    const posArray = new Float32Array(particleCount * 3);
-    const colorArray = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount * 3; i++) {
-        posArray[i] = (Math.random() - 0.5) * (Math.random() * 200);
-        colorArray[i] = Math.random();
-    }
-
-    const particlePositionAttribute = new THREE.BufferAttribute(posArray, 3);
-    particleGeometry.setAttribute('position', particlePositionAttribute);
-    particleGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
-
-    console.log(particleGeometry)
-
-    const particleMaterial = new THREE.PointsMaterial({
-        size: 0.35,
-        // vertexColors: true,
-        // color: 'blue',
-        map: bright,
-        transparent: true,
-        alphaMap: bright,
-        depthWrite: false,
-        // blending : THREE.AdditiveBlending
-    });
-
-    const particleMesh = new THREE.Points(particleGeometry, particleMaterial);
 
     const depthNum = 50; //박스와 박스 사이 z값. 깊이
     let targetZNum = 0; //
     let moveZ = 0;
-    let totalNum = 19;
     const boxGroup = new THREE.Group();
     const meshes = [];
-    const projectName = [
-        'EIPP',
-        '국립부여박물관',
-        '국립전주박물관',
-        '대외경제정책연구원',
-        '대전광역시사회서비스원',
-        '대전보건대학교',
-        '대전일자리경제진흥원',
-        '대전테크노파크',
-        '디엔에프',
-        '범부처의료기기연구개발사업단',
-        '브레인즈컴퍼니',
-        '선박해양플랜트',
-        '지란지교소프트',
-        '청와대_국민품으로',
-        '충청남도관광재단',
-        '타운보드TV',
-        '보노보노',
+    const projectInformation = [
+        {
+            name : 'EIPP',
+            type : 'jfif'
+        },
+        {
+            name : '국립부여박물관',
+            type : 'JPG',
+        },
+        {
+            name : '국립전주박물관',
+            type : 'JPG',
+        },
+        {
+            name : '대외경제정책연구원',
+            type : 'JPG'
+        },
+        {
+            name : '대전광역시사회서비스원',
+            type : 'JPG'
+        },
+        {
+            name : '대전보건대학교',
+            type : 'JPG'
+        },
+        {
+            name : '대전일자리경제진흥원',
+            type : 'JPG'
+        },
+        {
+            name : '대전테크노파크',
+            type : 'JPG'
+        },
+        {
+            name : '디엔에프',
+            type : 'JPG'
+        },
+        {
+            name : '범부처의료기기연구개발사업단',
+            type : 'JPG'
+        },
+        {
+            name : '브레인즈컴퍼니',
+            type : 'JPG'
+        },
+        {
+            name : '선박해양플랜트',
+            type : 'JPG'
+        },
+        {
+            name : '지란지교소프트',
+            type : 'png' 
+        },
+        {
+            name : '청와대_국민품으로',
+            type : 'JPG'
+        },
+        {
+            name : '충청남도관광재단',
+            type : 'JPG'
+        },
+        {
+            name : '타운보드TV',
+            type : 'JPG'
+        },
+        {
+            name : '보노보노1',
+            type : 'png'
+        },
+        {
+            name : '보노보노2',
+            type : 'png'
+        },
+        {
+            name : 'video',
+            type : 'mp4'
+        },
+        {
+            name : 'video2',
+            type : 'mp4'
+        }
     ]
+    
+    let totalNum = projectInformation.length;
 
     const addBox = (i) => {
-        
+        let geometry;
+        let texture;
         let material;
-        let boxMesh;
-        let x;
-        let y;
-        
-        const geometry = new THREE.BoxGeometry(24, 24, 0.1);
-        
-        if(i <= 16) { 
+        let video;
+        let videoSource;
+        let thumbGeometry;
+        let thumbMaterial;
 
-            const texture = textureLoader.load(
-                "./images/project/img" + i + '.JPG',
-            );
+        geometry = new THREE.BoxGeometry(24, 24, 0.1);
 
-            const texture1 = textureLoader.load(
-                "./images/project/img" + (i + 1)+ '.JPG',
-            );
-
-            const textures = [ texture, texture1 ];
-            let currentTexture = 0;
-
-            material = new THREE.MeshPhongMaterial({
-                map: texture,
-            });
-
-            boxMesh = new THREE.Mesh(geometry, material);
-
-            x = Math.random() * 100 - 100 / 2;
-            y = Math.random() * 100 - 100 / 2;
-
-        } else if(16 < i && i <= 18) {
+        if(projectInformation[i].type == 'mp4') {
             
-            const texture2 = textureLoader.load(
-                "./images/project/img" + i + '.png',
-            );
-
-            material = new THREE.MeshPhongMaterial({
-                map: texture2,
-                transparent: true,
-                // alphaMap: bright,
-            });
-
-            boxMesh = new THREE.Mesh(geometry, material);
-
-            x = 0;
-            y = boxMesh.geometry.parameters.height / 8;
-            // console.log()
-        } else {
-            const video = document.createElement('video');
+            video = document.createElement('video');
             video.muted = true;
             video.autoplay = true;
             video.loop = true;
-            video.play();
-            const videoSource = document.createElement('source');
-            videoSource.src = './texture/video.mp4';
+            // video.play();
+            videoSource = document.createElement('source');
+            videoSource.src = `./images/project/img${i}.${projectInformation[i].type}`;
             video.appendChild(videoSource);
 
-            const vTexture = new THREE.VideoTexture( video );
-            
-            material = new THREE.MeshPhongMaterial({
-                map: vTexture,
-                // alphaMap: bright,
-            });
+            texture = new THREE.VideoTexture( video );
 
-            boxMesh = new THREE.Mesh(geometry, material);
-            x = 0;
-            y = 0;
+        } else {
+            texture = textureLoader.load(
+                `./images/project/img${i}.${projectInformation[i].type}`,
+            );
         }
-       
-        boxMesh.name = projectName[i]
-        boxMesh.castShadow = true;
 
-        // let x = Math.random() * 100 - 100 / 2;
-        // let y = Math.random() * 100 - 100 / 2;
-      
+        material = new THREE.MeshPhongMaterial({
+            map: texture,
+            transparent : true
+        });
+
+        thumbMaterial = new THREE.MeshPhongMaterial({
+            color : 'red',
+            transparent : true,
+        })
+
+        const boxMesh = new THREE.Mesh(geometry, material);
+
+        thumbGeometry = new THREE.BoxGeometry(30, 30, 0.1);
+        const thumbMesh = new THREE.Mesh(thumbGeometry, thumbMaterial);
+        boxMesh.name = projectInformation[i].name;
+        boxMesh.thumb = thumbMesh;
+        boxMesh.castShadow = true;
+        let x;
+        if(i % 2 == 0) {
+            x = 20
+        } else {
+            x = -20
+        }
+        let y = geometry.parameters.height / 2;
         let z = -i * depthNum;
         boxMesh.position.set(x, y, z);
-        // boxMesh.rotation.set(x, y, z);
-        boxGroup.add(boxMesh);
-        meshes.push(boxMesh)
+        thumbMesh.position.set(x, y, z + 0.1);
+        boxGroup.add(boxMesh, thumbMesh);
+        meshes.push(boxMesh);
+
+        gsap.to(
+            boxMesh.thumb.material,{
+                opacity : 0
+            } 
+        )
+        
     };
 
-    for (let i = 0; i <= totalNum; i++) {
+    for (let i = 0; i < totalNum; i++) {
         addBox(i);
-        // console.log(i);
     }
+
     scene.add(boxGroup);
-    scene.add(particleMesh);
-    
 
     let mouseX = 0,
-        mouseY = 0,
-        moveX = 0,
-        moveY = 0;
-
-    let modelingPosition;
-    let modeling;
-
-    const gltfLoader = new GLTFLoader();
-    gltfLoader.load('/images/mx_intro_test.glb',
-        glb => {
-            modeling = glb.scene.children[0];
-            scene.add(modeling);
-            modeling.position.set(0, 0, -100)
-            // console.log(modeling)
-        }
-    )
-
-
+    mouseY = 0,
+    moveX = 0,
+    moveY = 0;
 
     const clock = new THREE.Clock();
 
@@ -238,12 +245,6 @@ export default function example() {
         boxGroup.position.x = -(moveX / 50);
         boxGroup.position.y = moveY / 50;
 
-        particleMesh.rotation.y = -.1 * elapsedTime
-        if (mouseX > 0) {
-            particleMesh.rotation.x = -mouseY * (elapsedTime * 0.0002)
-            particleMesh.rotation.y = -mouseX * (elapsedTime * 0.0002)
-        }
-
         renderer.render(scene, camera);
         renderer.setAnimationLoop(draw);
 
@@ -257,22 +258,12 @@ export default function example() {
         renderer.render(scene, camera);
     }
 
+    //스크롤 연동
     let scrolly = 0;
     let pageNum = 0;
     const progressBar = document.querySelector('.bar');
     let perNum = 0;
     const scrollFunc = () => {
-        // console.log(event.deltaY);
-        // if (event.deltaY <= -100) {
-        //     if (targetZNum > 0 && checkClick == false) {
-        //         targetZNum -= depthNum;
-        //     }
-        // } else {
-        //     if (targetZNum < totalNum * depthNum && checkClick == false) {
-        //         targetZNum += depthNum;
-        //     }
-        // }
-        // console.log(targetZNum);
         scrolly = window.scrollY;
         pageNum = Math.ceil(scrolly / 100);
         targetZNum = depthNum * pageNum;
@@ -282,37 +273,11 @@ export default function example() {
         );
 
         progressBar.style.width = perNum + '%'
-        // console.log(scrolly)
-        // console.log(pageNum)
     };
 
+    //마우스감지
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
-    let checkClick = false;
-    
-    const overIntersects = () => {
-        raycaster.setFromCamera(mouse, camera);
-
-        const intersects = raycaster.intersectObjects(meshes);
-
-        for(const item of intersects) {
-            const tl = gsap.timeline();
-            tl.to( item.object.material, {
-                duration: 0.5, 
-                opacity: 0,
-                onComplete : () => {
-                    item.object.material.map = textureLoader.load(
-                        "./images/project/img5.JPG"
-                    );
-                } 
-            })
-            .to( item.object.material, {duration:0.5, opacity: 1,  } );
-            // item.object.material.map = textureLoader.load(
-            //     "./images/project/img5.JPG"
-            // );
-            // console.log('hi')
-        }
-    }
 
     const checkIntersects = () => {
         raycaster.setFromCamera(mouse, camera);
@@ -320,37 +285,6 @@ export default function example() {
         const intersects = raycaster.intersectObjects(meshes);
 
         for (const item of intersects) {
-            // material.map = textures[nextTexture];
-            const itemBeforeScale = {
-                x: item.object.scale.x,
-                y: item.object.scale.y,
-                z: item.object.scale.z
-            };
-
-            const itemBeforePosition = {
-                x: item.object.position.x,
-                y: item.object.position.y,
-                z: item.object.position.z,
-            };
-
-
-            // gsap.to(
-            //     item.object.scale, {
-            //         x: window.innerWidth * 0.0005,
-            //         y: window.innerHeight * 0.0005,
-            //         duration: 1
-            //     }
-            // );
-
-            // gsap.to(
-            //     item.object.position, {
-            //         z: -(depthNum * pageNum),
-            //         x: 0,
-            //         y: 0,
-            //         duration: 1
-            //     }
-            // )
-
 
             const makeElement = document.createElement('div');
             makeElement.classList.add('projectName');
@@ -374,31 +308,7 @@ export default function example() {
                 }
             )
 
-            checkClick = true;
-            console.log(moveZ)
-            // item.object.scale.set(2,2,2)
-            // item.object.position.set(0,0,10)
-
             document.querySelector('.back').addEventListener('click', function () {
-                console.log(itemBeforeScale)
-                gsap.to(
-                    item.object.scale, {
-                        x: itemBeforeScale.x,
-                        y: itemBeforeScale.y,
-                        z: itemBeforeScale.z,
-                        duration: 1,
-                    }
-                )
-
-                gsap.to(
-                    item.object.position, {
-                        x: itemBeforePosition.x,
-                        y: itemBeforePosition.y,
-                        z: itemBeforePosition.z,
-                        duration: 1,
-                    }
-                )
-
                 gsap.to(
                     makeElement, {
                         y: 20,
@@ -406,14 +316,73 @@ export default function example() {
                         duration: 0.5
                     }
                 )
-
                 makeElement.remove()
-                checkClick = false;
-
             })
 
 
             break; // for문 종료
+        }
+
+    }
+    const overIntersects = () => {
+        raycaster.setFromCamera(mouse, camera);
+        
+        const intersects = raycaster.intersectObjects(meshes);
+        for (const item of intersects) {
+
+            const thumbnailMesh = item.object.thumb;
+
+            gsap.to(
+                thumbnailMesh.position, {
+                    z : item.object.position.z + 0.1,
+                    duration : 0.5
+                }
+            )
+
+            gsap.to(
+                thumbnailMesh.material, {
+                    opacity : 1,
+                    duration : 0.5
+                }
+            )
+
+            gsap.to(
+                thumbnailMesh.scale, {
+                    x : 0.8,
+                    y : 0.8,
+                    duration : 0.5
+                }
+            )
+            
+            // break; // for문 종료
+        }
+        
+        if(intersects.length == 0){
+            for(let i = 0; i <= meshes.length; ++i) {
+                const thumbnailMesh = meshes[i].thumb;
+
+                gsap.to(
+                    thumbnailMesh.position, {
+                        z : meshes[i].position.z,
+                        duration : 0.5
+                    }
+                )
+    
+                gsap.to(
+                    thumbnailMesh.material, {
+                        opacity : 0,
+                        duration : 0.5
+                    }
+                )
+    
+                gsap.to(
+                    thumbnailMesh.scale, {
+                        x : 1,
+                        y : 1,
+                        duration : 0.5
+                    }
+                )
+            }
         }
 
     }
@@ -422,14 +391,14 @@ export default function example() {
         mouse.x = e.clientX / canvas.clientWidth * 2 - 1; //3d환경 마우스 위치 구하기
         mouse.y = -(e.clientY / canvas.clientHeight * 2 - 1); //3d환경 마우스 위치 구하기
 
-        // checkIntersects();
+        checkIntersects()
     })
 
     canvas.addEventListener('mousemove', e => {
         mouse.x = e.clientX / canvas.clientWidth * 2 - 1; //3d환경 마우스 위치 구하기
         mouse.y = -(e.clientY / canvas.clientHeight * 2 - 1); //3d환경 마우스 위치 구하기
 
-        overIntersects();
+        overIntersects()
     })
 
     const mouseParticle = () => {
@@ -511,8 +480,8 @@ export default function example() {
     
 
 
-    document.body.style.height = window.innerHeight + totalNum * 100 + 'px'
     // 이벤트
+    document.body.style.height = window.innerHeight + totalNum * 100 - 150 + 'px'
     window.addEventListener('scroll', scrollFunc);
     window.addEventListener('resize', setSize);
     window.addEventListener("mousemove", (e) => {
