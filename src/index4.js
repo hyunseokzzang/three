@@ -9,6 +9,8 @@ import ScrollTrigger from 'gsap/ScrollTrigger';
 
 export default function example() {
     // Renderer
+    gsap.registerPlugin(ScrollTrigger);
+
     const canvas = document.querySelector('#three-canvas');
     const renderer = new THREE.WebGLRenderer({
         canvas,
@@ -68,10 +70,37 @@ export default function example() {
     let moveZ = 0;
     const boxGroup = new THREE.Group();
     const meshes = [];
+
+    class Project {
+        constructor(info) {
+            this.name = info.name;
+            this.type = info.type;
+            this.image = `./image/project/main/${this.name}.png`,
+            this.background = info.background; 
+        }
+    }
+
+    const projectList = ['EIPP','국립부여박물관'];
+    const projectResult = [];
+
+    for(let i = 0; i < projectList.length; ++i) {
+        projectResult.push(
+            new Project({
+                name : projectList[i],
+                type : 'jfif',
+                background : 'red'
+            })
+        )
+    }
+
+    console.log(projectResult);
+
     const projectInformation = [
         {
             name : 'EIPP',
-            type : 'jfif'
+            type : 'jfif',
+            image : `./images/project/main/eipp.png`,
+            background : 'red'
         },
         {
             name : '국립부여박물관',
@@ -161,7 +190,7 @@ export default function example() {
         let videoSource;
         let thumbGeometry;
         let thumbMaterial;
-
+        let thumbMesh;
         geometry = new THREE.BoxGeometry(24, 24, 0.1);
 
         if(projectInformation[i].type == 'mp4') {
@@ -172,7 +201,7 @@ export default function example() {
             video.loop = true;
             // video.play();
             videoSource = document.createElement('source');
-            videoSource.src = `./images/project/img${i}.${projectInformation[i].type}`;
+            videoSource.src = `./images/project/thumb/img${i}.${projectInformation[i].type}`;
             video.appendChild(videoSource);
 
             texture = new THREE.VideoTexture( video );
@@ -195,10 +224,12 @@ export default function example() {
 
         const boxMesh = new THREE.Mesh(geometry, material);
 
-        thumbGeometry = new THREE.BoxGeometry(30, 30, 0.1);
-        const thumbMesh = new THREE.Mesh(thumbGeometry, thumbMaterial);
+        thumbGeometry = new THREE.BoxGeometry(24.1, 24.1, 0.1);
+        thumbMesh = new THREE.Mesh(thumbGeometry, thumbMaterial);
         boxMesh.name = projectInformation[i].name;
         boxMesh.thumb = thumbMesh;
+        boxMesh.image = projectInformation[i].image;
+        boxMesh.background = projectInformation[i].background;
         boxMesh.castShadow = true;
         let x;
         if(i % 2 == 0) {
@@ -263,21 +294,102 @@ export default function example() {
     let pageNum = 0;
     const progressBar = document.querySelector('.bar');
     let perNum = 0;
+
     const scrollFunc = () => {
-        scrolly = window.scrollY;
-        pageNum = Math.ceil(scrolly / 100);
-        targetZNum = depthNum * pageNum;
+        if(checkProjectShow == false) {
+            scrolly = window.scrollY;
+            pageNum = Math.ceil(scrolly / 100);
+            targetZNum = depthNum * pageNum;
 
-        perNum = Math.ceil(
-            (scrolly / (document.body.offsetHeight - window.innerHeight)) * 100
-        );
+            perNum = Math.ceil(
+                (scrolly / (document.body.offsetHeight - window.innerHeight)) * 100
+            );
 
-        progressBar.style.width = perNum + '%'
+            progressBar.style.width = perNum + '%'
+        }
     };
 
     //마우스감지
-    const raycaster = new THREE.Raycaster();
+    
+    const cameraPosition = new THREE.Vector3(0, 0, 0);
+    const cameraDirection = new THREE.Vector3(0, 0, -1);
+    const raycaster = new THREE.Raycaster(cameraPosition, cameraDirection);
+    raycaster.near = 0;
+    raycaster.far = 110;
     const mouse = new THREE.Vector2();
+
+    let checkProjectShow = false;
+    const projectDetail = (item) => {
+        
+        let project;
+        let projectDetail;
+        let projectHead;
+        let projectContainer;
+        let projectImage;
+        const makeElement = (tagName) => {
+            return document.createElement(tagName);
+        }
+
+        project = makeElement('div');
+        project.classList.add('project');
+        project.style.background = item.object.background;
+        projectDetail = makeElement('div');
+        projectDetail.classList.add('project-detail');
+        projectHead = makeElement('div');
+        projectHead.classList.add('project-detail-title');
+        projectHead.innerHTML = item.object.name;
+        projectContainer = makeElement('div');
+        projectContainer.classList.add('project-detail-info');
+        projectImage = makeElement('img');
+        projectImage.src = item.object.image;
+        // projectInformation.innerHTML = item.object.name;
+
+        projectDetail.appendChild(projectHead);
+        projectDetail.appendChild(projectContainer);
+        projectContainer.appendChild(projectImage);
+        project.appendChild(projectDetail);
+
+        const closeProject = makeElement('button');
+        closeProject.classList.add('back');
+        closeProject.innerHTML = '돌아가 !';
+        project.appendChild(closeProject);
+        document.body.appendChild(project);
+
+        gsap.to(
+            projectHead, {
+                scrollTrigger : {
+                    trigger : projectHead,
+                    endTrigger : projectContainer,
+                    start : 'top top',
+                    pin : true,
+                    pinSpacing : false,
+                    scrub : true,
+                    markers : true
+                }
+            }
+        )
+        gsap.from(
+            project, {
+                opacity: 0,
+                duration: 0.5
+            }
+        )
+        
+        checkProjectShow = true;
+        document.body.style.overflow = 'hidden';
+
+        document.querySelector('.back').addEventListener('click', function () {
+            gsap.to(
+                project, {
+                    opacity: 0,
+                    duration: 0.5
+                }
+            )
+            checkProjectShow = false;
+            document.body.style.overflow = '';
+            setTimeout(()=> { project.remove() },500)
+        })
+    }
 
     const checkIntersects = () => {
         raycaster.setFromCamera(mouse, camera);
@@ -286,38 +398,7 @@ export default function example() {
 
         for (const item of intersects) {
 
-            const makeElement = document.createElement('div');
-            makeElement.classList.add('projectName');
-            const makeElementDetail = document.createElement('div');
-            makeElementDetail.classList.add('projectNameDetail');
-            makeElementDetail.innerHTML = item.object.name;
-            makeElement.appendChild(makeElementDetail);
-
-            const makeElementBack = document.createElement('button');
-            makeElementBack.classList.add('back');
-            makeElementBack.innerHTML = '돌아가 !';
-            makeElementDetail.appendChild(makeElementBack);
-            document.body.appendChild(makeElement);
-
-            gsap.from(
-                makeElement, {
-                    opacity: 0,
-                    y: 20,
-                    delay: 0.5,
-                    duration: 0.5
-                }
-            )
-
-            document.querySelector('.back').addEventListener('click', function () {
-                gsap.to(
-                    makeElement, {
-                        y: 20,
-                        opacity: 0,
-                        duration: 0.5
-                    }
-                )
-                makeElement.remove()
-            })
+            projectDetail(item)
 
 
             break; // for문 종료
@@ -345,43 +426,36 @@ export default function example() {
                     duration : 0.5
                 }
             )
-
-            gsap.to(
-                thumbnailMesh.scale, {
-                    x : 0.8,
-                    y : 0.8,
-                    duration : 0.5
-                }
-            )
             
             // break; // for문 종료
         }
         
         if(intersects.length == 0){
             for(let i = 0; i <= meshes.length; ++i) {
-                const thumbnailMesh = meshes[i].thumb;
-
-                gsap.to(
-                    thumbnailMesh.position, {
-                        z : meshes[i].position.z,
-                        duration : 0.5
-                    }
-                )
-    
-                gsap.to(
-                    thumbnailMesh.material, {
-                        opacity : 0,
-                        duration : 0.5
-                    }
-                )
-    
-                gsap.to(
-                    thumbnailMesh.scale, {
-                        x : 1,
-                        y : 1,
-                        duration : 0.5
-                    }
-                )
+                
+                    const thumbnailMesh = meshes[i].thumb;
+                
+                    gsap.to(
+                        thumbnailMesh.position, {
+                            z : meshes[i].position.z,
+                            duration : 0.5
+                        }
+                    )
+        
+                    gsap.to(
+                        thumbnailMesh.material, {
+                            opacity : 0,
+                            duration : 0.5
+                        }
+                    )
+        
+                    gsap.to(
+                        thumbnailMesh.scale, {
+                            x : 1,
+                            y : 1,
+                            duration : 0.5
+                        }
+                    )
             }
         }
 
@@ -481,7 +555,7 @@ export default function example() {
 
 
     // 이벤트
-    document.body.style.height = window.innerHeight + totalNum * 100 - 150 + 'px'
+    document.body.style.height = window.innerHeight + totalNum * 100 - 150 + 'px';
     window.addEventListener('scroll', scrollFunc);
     window.addEventListener('resize', setSize);
     window.addEventListener("mousemove", (e) => {
