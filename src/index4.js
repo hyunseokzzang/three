@@ -208,7 +208,7 @@ export default function example() {
 
         } else {
             texture = textureLoader.load(
-                `./images/project/img${i}.${projectInformation[i].type}`,
+                `./images/project/thumb/img${i}.${projectInformation[i].type}`,
             );
         }
 
