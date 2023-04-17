@@ -105,6 +105,8 @@ export default function example() {
         {
             name : '국립부여박물관',
             type : 'JPG',
+            image : `./images/project/main/buyeo.png`,
+            background : 'blue'
         },
         {
             name : '국립전주박물관',
@@ -332,9 +334,9 @@ export default function example() {
 
         project = makeElement('div');
         project.classList.add('project');
-        project.style.background = item.object.background;
         projectDetail = makeElement('div');
         projectDetail.classList.add('project-detail');
+        projectDetail.style.background = item.object.background;
         projectHead = makeElement('div');
         projectHead.classList.add('project-detail-title');
         projectHead.innerHTML = item.object.name;
