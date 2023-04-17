@@ -25,7 +25,7 @@ export default function example() {
 
     // Scene
     const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog('#fff', 0, 500)
+    scene.fog = new THREE.Fog('gray', 0, 500)
     scene.background = new THREE.Color('gray')
     // Camera
     const camera = new THREE.PerspectiveCamera(
