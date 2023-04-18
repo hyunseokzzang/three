@@ -74,21 +74,44 @@ export default function example() {
     class Project {
         constructor(info) {
             this.name = info.name;
-            this.type = info.type;
-            this.image = `./image/project/main/${this.name}.png`,
+            this.head = info.head;
             this.background = info.background; 
+            this.desc = info.desc;
+            this.year = info.year;
+            this.thumb = `./images/project/thumb/${this.name}.jpg`,
+            this.hover = `./images/project/hover/${this.name}.jpg`;
+            this.main = `./images/project/main/${this.name}.jpg`;
+            this.logo = `./images/project/logo/${this.name}.svg`; 
         }
     }
 
-    const projectList = ['EIPP','국립부여박물관'];
+    const projectList = [
+        {
+            name : 'kcpass',
+            head : '중앙사회서비스원',
+            desc : '중앙사회서비스원 테스트',
+            year : '2022',
+            background : 'yellow',
+        },
+        {
+            name : 'hit',
+            head : '대전보건대학교',
+            desc : '대전보건대학교 입학사이트 구축',
+            year : '2022',
+            background : '#00204A',
+        },
+    ];
+
     const projectResult = [];
 
     for(let i = 0; i < projectList.length; ++i) {
         projectResult.push(
             new Project({
-                name : projectList[i],
-                type : 'jfif',
-                background : 'red'
+                name : projectList[i].name,
+                head : projectList[i].head,
+                background : projectList[i].background,
+                desc : projectList[i].desc,
+                year : projectList[i].year
             })
         )
     }
@@ -182,72 +205,84 @@ export default function example() {
         }
     ]
     
-    let totalNum = projectInformation.length;
+    let totalNum = projectResult.length;
 
     const addBox = (i) => {
-        let geometry;
-        let texture;
-        let material;
+        let thumbGeometry;
+        let thumbTexture;
+        let hoverTexture;
+        let thumbMaterial;
         let video;
         let videoSource;
-        let thumbGeometry;
-        let thumbMaterial;
-        let thumbMesh;
-        geometry = new THREE.BoxGeometry(24, 24, 0.1);
+        let hoverGeometry;
+        let hoverMaterial;
+        let hoverMesh;
 
-        if(projectInformation[i].type == 'mp4') {
+        thumbGeometry = new THREE.BoxGeometry(24, 24, 0.1);
+        // if(projectInformation[i].type == 'mp4') {
             
-            video = document.createElement('video');
-            video.muted = true;
-            video.autoplay = true;
-            video.loop = true;
-            // video.play();
-            videoSource = document.createElement('source');
-            videoSource.src = `./images/project/thumb/img${i}.${projectInformation[i].type}`;
-            video.appendChild(videoSource);
+        //     video = document.createElement('video');
+        //     video.muted = true;
+        //     video.autoplay = true;
+        //     video.loop = true;
+        //     // video.play();
+        //     videoSource = document.createElement('source');
+        //     videoSource.src = `./images/project/thumb/img${i}.${projectInformation[i].type}`;
+        //     video.appendChild(videoSource);
 
-            texture = new THREE.VideoTexture( video );
+        //     texture = new THREE.VideoTexture( video );
 
-        } else {
-            texture = textureLoader.load(
-                `./images/project/thumb/img${i}.${projectInformation[i].type}`,
-            );
-        }
+        // } else {
+        //     texture = textureLoader.load(
+        //         `./images/project/thumb/img${i}.${projectInformation[i].type}`,
+        //     );
+        // }
+        thumbTexture = textureLoader.load(
+                    `${projectResult[i].thumb}`,
+        );
+        hoverTexture = textureLoader.load(
+            `${projectResult[i].hover}`,
+        );
 
-        material = new THREE.MeshPhongMaterial({
-            map: texture,
+        thumbMaterial = new THREE.MeshPhongMaterial({
+            map: thumbTexture,
             transparent : true
         });
 
-        thumbMaterial = new THREE.MeshPhongMaterial({
-            color : 'red',
+        hoverMaterial = new THREE.MeshPhongMaterial({
+            map : hoverTexture,
             transparent : true,
         })
 
-        const boxMesh = new THREE.Mesh(geometry, material);
+        const thumbMesh = new THREE.Mesh(thumbGeometry, thumbMaterial);
 
-        thumbGeometry = new THREE.BoxGeometry(24.1, 24.1, 0.1);
-        thumbMesh = new THREE.Mesh(thumbGeometry, thumbMaterial);
-        boxMesh.name = projectInformation[i].name;
-        boxMesh.thumb = thumbMesh;
-        boxMesh.image = projectInformation[i].image;
-        boxMesh.background = projectInformation[i].background;
-        boxMesh.castShadow = true;
+        hoverGeometry = new THREE.BoxGeometry(24.1, 24.1, 0.1);
+        hoverMesh = new THREE.Mesh(hoverGeometry, hoverMaterial);
+        thumbMesh.head = projectResult[i].head;
+        thumbMesh.hover = hoverMesh;
+        thumbMesh.main = projectResult[i].main;
+        thumbMesh.background = projectResult[i].background;
+        thumbMesh.desc = projectResult[i].desc;
+        thumbMesh.year = projectResult[i].year;
+        thumbMesh.logo = projectResult[i].logo;
+
+
+        thumbMesh.castShadow = true;
         let x;
         if(i % 2 == 0) {
             x = 20
         } else {
             x = -20
         }
-        let y = geometry.parameters.height / 2;
+        let y = thumbGeometry.parameters.height / 2;
         let z = -i * depthNum;
-        boxMesh.position.set(x, y, z);
-        thumbMesh.position.set(x, y, z + 0.1);
-        boxGroup.add(boxMesh, thumbMesh);
-        meshes.push(boxMesh);
+        thumbMesh.position.set(x, y, z);
+        hoverMesh.position.set(x, y, z + 0.1);
+        boxGroup.add(thumbMesh, hoverMesh);
+        meshes.push(thumbMesh);
 
         gsap.to(
-            boxMesh.thumb.material,{
+            thumbMesh.hover.material,{
                 opacity : 0
             } 
         )
@@ -334,16 +369,24 @@ export default function example() {
 
         project = makeElement('div');
         project.classList.add('project');
+        project.style.background = item.object.background;
         projectDetail = makeElement('div');
         projectDetail.classList.add('project-detail');
-        projectDetail.style.background = item.object.background;
         projectHead = makeElement('div');
         projectHead.classList.add('project-detail-title');
-        projectHead.innerHTML = item.object.name;
+        projectHead.innerHTML = `
+            <strong>PROJECT.</strong>
+            <div class="project-detail-title-topic">${item.object.head}</div>
+            <strong>Detail</strong>
+            <div>${item.object.desc}</div>
+            <strong>RELEASE DATE</strong>
+            <div>${item.object.year}</div>
+            <img src="${item.object.logo}">
+        `;
         projectContainer = makeElement('div');
         projectContainer.classList.add('project-detail-info');
         projectImage = makeElement('img');
-        projectImage.src = item.object.image;
+        projectImage.src = item.object.main;
         // projectInformation.innerHTML = item.object.name;
 
         projectDetail.appendChild(projectHead);
@@ -366,7 +409,6 @@ export default function example() {
                     pin : true,
                     pinSpacing : false,
                     scrub : true,
-                    markers : true
                 }
             }
         )
@@ -413,17 +455,17 @@ export default function example() {
         const intersects = raycaster.intersectObjects(meshes);
         for (const item of intersects) {
 
-            const thumbnailMesh = item.object.thumb;
+            const hoverMesh = item.object.hover;
 
             gsap.to(
-                thumbnailMesh.position, {
+                hoverMesh.position, {
                     z : item.object.position.z + 0.1,
                     duration : 0.5
                 }
             )
 
             gsap.to(
-                thumbnailMesh.material, {
+                hoverMesh.material, {
                     opacity : 1,
                     duration : 0.5
                 }
@@ -435,26 +477,18 @@ export default function example() {
         if(intersects.length == 0){
             for(let i = 0; i <= meshes.length; ++i) {
                 
-                    const thumbnailMesh = meshes[i].thumb;
+                    const hoverMesh = meshes[i].hover;
                 
                     gsap.to(
-                        thumbnailMesh.position, {
+                        hoverMesh.position, {
                             z : meshes[i].position.z,
                             duration : 0.5
                         }
                     )
         
                     gsap.to(
-                        thumbnailMesh.material, {
+                        hoverMesh.material, {
                             opacity : 0,
-                            duration : 0.5
-                        }
-                    )
-        
-                    gsap.to(
-                        thumbnailMesh.scale, {
-                            x : 1,
-                            y : 1,
                             duration : 0.5
                         }
                     )

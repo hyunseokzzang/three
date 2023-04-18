@@ -1,3 +1,12 @@
+@charset 'UTF-8';
+
+@import url('./font/SUIT/SUIT.css');
+
+html {
+	font-size: 10px;
+	font-family: 'SUIT';
+}
+
 * {
 	margin: 0;
 	padding:0;
@@ -38,36 +47,60 @@
 	align-items: flex-end;
 	justify-content: center;
 	box-sizing: border-box;
+	z-index: 11;
+	overflow: auto;
+	padding-top: 13.4rem;
 }
 
 .project-detail {
-	width: 100%;
+	width: 140rem;
 	height: 100%;
-	padding: 20px;
-	overflow: auto;
-	background: #fff;
-	text-align: center;
 	padding: 0;
 	display:flex;
 }
 
 .project-detail-title {
-	width: 300px;
-	flex-shrink: 0;
-	margin-right: 100px;
-	font-size: 25px;
-	color: #000;
+	width: 32%;
+	padding-right: 6rem;
+	color: #fff;
+	display: flex;
+	flex-direction: column;
+}
+
+.project-detail-title img {
+	position: fixed;
+	bottom: 0;
+	left: 25%;
+}
+
+.project-detail-title strong {
+	font-size: 1.4rem;
+	opacity: 0.4;
+	margin-top: 5.8rem;
+	margin-bottom: 1rem;
+	font-weight: 400;
+}
+
+.project-detail-title strong:first-of-type {
+	margin-top: 0;
+}
+
+.project-detail-title div {
+	font-size: 1.8rem;
+}
+
+.project-detail-title-topic {
+	font-size: 2.5rem !important;
+	font-weight: 700;
 }
 
 .project-detail-info {
-	flex-grow: 1;
-	/* height:200vw; */
+	width: 68%;
+	position: relative;
 }
 
 .project-detail-info img {
 	width: 100%;
-	/* height: 100%;
-	object-fit: cover; */
 }
 
 .back {
