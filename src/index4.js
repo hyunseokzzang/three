@@ -356,6 +356,36 @@ export default function example() {
     const mouse = new THREE.Vector2();
 
     let checkProjectShow = false;
+
+    const showLoadingManager = () => {
+        const loading = document.createElement('div');
+        loading.classList.add('loading');
+        loading.innerHTML = '로딩중..'
+
+        gsap.from(
+            loading, {
+                opacity : 0,
+                duration : 0.5
+            }
+        )
+    }
+
+    const hideLoadingManager = () => {
+        const loading = document.querySelector('.loading');
+
+        gsap.to(
+            loading,{
+                opacity : 0,
+                duration : 0.5,
+                onComplete : () => {
+                    setTimeout(function(){
+                        loading.remove()
+                    },600)
+                }
+            }
+        )
+    }
+
     const projectDetail = (item) => {
         
         let project;
@@ -401,12 +431,6 @@ export default function example() {
         projectContainer.appendChild(projectImage);
         project.appendChild(projectDetail);
 
-        const closeProject = makeElement('button');
-        closeProject.classList.add('back');
-        closeProject.innerHTML = '돌아가 !';
-        project.appendChild(closeProject);
-        document.body.appendChild(project);
-
         gsap.to(
             projectHead, {
                 scrollTrigger : {
@@ -420,6 +444,13 @@ export default function example() {
                 }
             }
         )
+
+        const closeProject = makeElement('button');
+        closeProject.classList.add('back');
+        closeProject.innerHTML = '돌아가 !';
+        project.appendChild(closeProject);
+        document.body.appendChild(project);
+        
         gsap.from(
             project, {
                 opacity: 0,
