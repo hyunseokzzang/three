@@ -25,8 +25,8 @@ export default function example() {
 
     // Scene
     const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog('gray', 0, 500)
-    scene.background = new THREE.Color('gray')
+    scene.fog = new THREE.Fog('#F4F6F7', 0, 500)
+    scene.background = new THREE.Color('#F4F6F7')
     // Camera
     const camera = new THREE.PerspectiveCamera(
         75,
@@ -50,14 +50,14 @@ export default function example() {
     // scene.add(ambientLight);
     
 
-    const directionalLight = new THREE.DirectionalLight('#fff', 0.75);
+    const directionalLight = new THREE.DirectionalLight('#fff', 0.5);
     directionalLight.position.x = 0;
     directionalLight.position.y = 50;
     directionalLight.position.z = 30;
     directionalLight.castShadow = true;
     const directionalLightGuide = new THREE.DirectionalLightHelper(directionalLight);
     scene.add(directionalLight);
-    scene.add(directionalLightGuide)
+    // scene.add(directionalLightGuide)
 
     const textureLoader = new THREE.TextureLoader();
     const bright = textureLoader.load('./texture/bright.png');
@@ -75,30 +75,100 @@ export default function example() {
         constructor(info) {
             this.name = info.name;
             this.head = info.head;
-            this.background = info.background; 
+            this.background = info.background || 'gray'; 
             this.desc = info.desc;
             this.year = info.year;
-            this.thumb = `./images/project/thumb/${this.name}.jpg`,
-            this.hover = `./images/project/hover/${this.name}.jpg`;
-            this.main = `./images/project/main/${this.name}.jpg`;
-            this.logo = `./images/project/logo/${this.name}.svg`; 
+            this.thumb = `./images/project/thumb/${this.name}.jpg` || './images/project/thumb/sample.jpg',
+            this.hover = `./images/project/hover/${this.name}.png` || './images/project/hover/sample.png';
+            this.main = `./images/project/main/${this.name}.jpg` || './images/project/hover/sample.jpg';
+            this.logo = `./images/project/logo/${this.name}.png` || './images/project/logo/sample.png'; 
         }
     }
 
     const projectList = [
         {
-            name : 'kcpass',
-            head : '중앙사회서비스원',
-            desc : '중앙사회서비스원 테스트',
+            name : 'jeonju',
+            head : '국립전주박물관',
+            desc : '박물관 뉴스레터 제작',
             year : '2022',
-            background : 'yellow',
+        },
+        {
+            name : 'engineering',
+            head : '한국과학기술원',
+            desc : '카이스트 공과대학 뉴스레터 제작',
+            year : '2022',
+        },
+        {
+            name : 'kimm',
+            head : '한국기계연구원',
+            desc : '영문웹진 제작',
+            year : '2022',
+        },
+        {
+            name : 'djbea',
+            head : '대전일자리경제진흥원',
+            desc : '홈페이지 사용자 만족도 조사',
+            year : '2022',
+        },
+        {
+            name : 'khidi',
+            head : '한국보건산업진흥원',
+            desc : '의료기기산업 주간뉴스레터 구독 이벤트홍보',
+            year : '2022',
+        },
+        {
+            name : 'innopolis',
+            head : '연구개발특구진흥재단',
+            desc : '연구개발특구진흥재단 메타버스 구축',
+            year : '2022',
+        },
+        {
+            name : 'doksa',
+            head : '안정성평가연구소',
+            desc : 'KIT 국가독성정책센터 홈페이지 구축',
+            year : '2022',
+        },
+        {
+            name : 'brainz',
+            head : '브레인즈컴퍼니',
+            desc : '브레인즈컴퍼니 홈페이지 구축',
+            year : '2022',
         },
         {
             name : 'hit',
             head : '대전보건대학교',
             desc : '대전보건대학교 입학사이트 구축',
             year : '2022',
-            background : '#00204A',
+        },
+        {
+            name : 'kigam',
+            head : '한국지질자원연구원',
+            desc : '한국지질자원연구원 홈페이지 통합유지보수',
+            year : '2022',
+        },
+        {
+            name : 'knfc',
+            head : '한국원자력연료',
+            desc : '한국원자력연료 홈페이지 유지보수',
+            year : '2022',
+        },
+        {
+            name : 'kcpass',
+            head : '중앙사회서비스원',
+            desc : '중앙사회서비스원 홈페이지 유지보수',
+            year : '2022',
+        },
+        {
+            name : 'diwc',
+            head : '대덕복지센터',
+            desc : '대덕복지센터 웹호스팅 및 보안인증서 갱신',
+            year : '2022',
+        },
+        {
+            name : 'kribb',
+            head : '한국생명공학연구원',
+            desc : '한국생명공학연구원 대표홈페이지 웹접근성 인증마크 갱신',
+            year : '2022',
         },
     ];
 
@@ -115,96 +185,6 @@ export default function example() {
             })
         )
     }
-
-    console.log(projectResult);
-
-    const projectInformation = [
-        {
-            name : 'EIPP',
-            type : 'jfif',
-            image : `./images/project/main/eipp.png`,
-            background : 'red'
-        },
-        {
-            name : '국립부여박물관',
-            type : 'JPG',
-            image : `./images/project/main/buyeo.png`,
-            background : 'blue'
-        },
-        {
-            name : '국립전주박물관',
-            type : 'JPG',
-        },
-        {
-            name : '대외경제정책연구원',
-            type : 'JPG'
-        },
-        {
-            name : '대전광역시사회서비스원',
-            type : 'JPG'
-        },
-        {
-            name : '대전보건대학교',
-            type : 'JPG'
-        },
-        {
-            name : '대전일자리경제진흥원',
-            type : 'JPG'
-        },
-        {
-            name : '대전테크노파크',
-            type : 'JPG'
-        },
-        {
-            name : '디엔에프',
-            type : 'JPG'
-        },
-        {
-            name : '범부처의료기기연구개발사업단',
-            type : 'JPG'
-        },
-        {
-            name : '브레인즈컴퍼니',
-            type : 'JPG'
-        },
-        {
-            name : '선박해양플랜트',
-            type : 'JPG'
-        },
-        {
-            name : '지란지교소프트',
-            type : 'png' 
-        },
-        {
-            name : '청와대_국민품으로',
-            type : 'JPG'
-        },
-        {
-            name : '충청남도관광재단',
-            type : 'JPG'
-        },
-        {
-            name : '타운보드TV',
-            type : 'JPG'
-        },
-        {
-            name : '보노보노1',
-            type : 'png'
-        },
-        {
-            name : '보노보노2',
-            type : 'png'
-        },
-        {
-            name : 'video',
-            type : 'mp4'
-        },
-        {
-            name : 'video2',
-            type : 'mp4'
-        }
-    ]
-    
     let totalNum = projectResult.length;
 
     const addBox = (i) => {
@@ -217,7 +197,8 @@ export default function example() {
         let hoverGeometry;
         let hoverMaterial;
         let hoverMesh;
-
+        let thumbPath;
+        let hoverPath;
         thumbGeometry = new THREE.BoxGeometry(24, 24, 0.1);
         // if(projectInformation[i].type == 'mp4') {
             
@@ -237,11 +218,26 @@ export default function example() {
         //         `./images/project/thumb/img${i}.${projectInformation[i].type}`,
         //     );
         // }
+        thumbPath =  `${projectResult[i].thumb}`;
+        hoverPath = `${projectResult[i].hover}`;
+
         thumbTexture = textureLoader.load(
-                    `${projectResult[i].thumb}`,
+                thumbPath,
+                function (error) {
+                    thumbPath = './images/project/thumb/sample.jpg'
+                    thumbTexture = textureLoader.load(thumbPath);
+                    console.error(`Failed to load thumbnail texture: ${thumbPath}`, error);
+                }        
         );
+
         hoverTexture = textureLoader.load(
-            `${projectResult[i].hover}`,
+            hoverPath,
+            function (error) {
+                // 대체 이미지 로드 실패
+                hoverPath = './images/project/hover/sample.png'
+                hoverTexture = textureLoader.load(hoverPath);
+                console.error(`Failed to load hover texture: ${hoverPath}`, error);
+            }
         );
 
         thumbMaterial = new THREE.MeshPhongMaterial({
@@ -363,6 +359,7 @@ export default function example() {
         let projectHead;
         let projectContainer;
         let projectImage;
+        let projectLogo;
         const makeElement = (tagName) => {
             return document.createElement(tagName);
         }
@@ -383,12 +380,18 @@ export default function example() {
             <div>${item.object.year}</div>
             <img src="${item.object.logo}">
         `;
+        projectLogo = projectHead.querySelector('img');
+        projectLogo.onerror = function() {
+            this.src = './images/project/logo/sample.png'
+        }
         projectContainer = makeElement('div');
         projectContainer.classList.add('project-detail-info');
         projectImage = makeElement('img');
         projectImage.src = item.object.main;
         // projectInformation.innerHTML = item.object.name;
-
+        projectImage.onerror = function() {
+            this.src = './images/project/main/sample.jpg'
+        }
         projectDetail.appendChild(projectHead);
         projectDetail.appendChild(projectContainer);
         projectContainer.appendChild(projectImage);
@@ -409,6 +412,7 @@ export default function example() {
                     pin : true,
                     pinSpacing : false,
                     scrub : true,
+                    // markers : true,
                 }
             }
         )
@@ -458,6 +462,13 @@ export default function example() {
             const hoverMesh = item.object.hover;
 
             gsap.to(
+                item.object.material, {
+                    opacity : 0,
+                    duration : 0.5
+                }
+            )
+
+            gsap.to(
                 hoverMesh.position, {
                     z : item.object.position.z + 0.1,
                     duration : 0.5
@@ -470,7 +481,7 @@ export default function example() {
                     duration : 0.5
                 }
             )
-            
+
             // break; // for문 종료
         }
         
@@ -489,6 +500,13 @@ export default function example() {
                     gsap.to(
                         hoverMesh.material, {
                             opacity : 0,
+                            duration : 0.5
+                        }
+                    )
+
+                    gsap.to(
+                        meshes[i].material, {
+                            opacity : 1,
                             duration : 0.5
                         }
                     )
