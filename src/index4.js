@@ -222,22 +222,11 @@ export default function example() {
         hoverPath = `${projectResult[i].hover}`;
 
         thumbTexture = textureLoader.load(
-                thumbPath,
-                function (error) {
-                    thumbPath = './images/project/thumb/sample.jpg'
-                    thumbTexture = textureLoader.load(thumbPath);
-                    console.error(`Failed to load thumbnail texture: ${thumbPath}`, error);
-                }        
+                thumbPath,    
         );
 
         hoverTexture = textureLoader.load(
             hoverPath,
-            function (error) {
-                // 대체 이미지 로드 실패
-                hoverPath = './images/project/hover/sample.png'
-                hoverTexture = textureLoader.load(hoverPath);
-                console.error(`Failed to load hover texture: ${hoverPath}`, error);
-            }
         );
 
         thumbMaterial = new THREE.MeshPhongMaterial({
@@ -252,7 +241,7 @@ export default function example() {
 
         const thumbMesh = new THREE.Mesh(thumbGeometry, thumbMaterial);
 
-        hoverGeometry = new THREE.BoxGeometry(24.1, 24.1, 0.1);
+        hoverGeometry = new THREE.BoxGeometry(24, 24, 0.1);
         hoverMesh = new THREE.Mesh(hoverGeometry, hoverMaterial);
         thumbMesh.head = projectResult[i].head;
         thumbMesh.hover = hoverMesh;
@@ -270,7 +259,7 @@ export default function example() {
         } else {
             x = -20
         }
-        let y = thumbGeometry.parameters.height / 2;
+        let y = Math.random() * 40;
         let z = -i * depthNum;
         thumbMesh.position.set(x, y, z);
         hoverMesh.position.set(x, y, z + 0.1);
@@ -302,7 +291,7 @@ export default function example() {
         const delta = clock.getDelta();
         const elapsedTime = clock.getElapsedTime();
 
-        moveZ += (targetZNum - moveZ) * 0.07;
+        // moveZ += (targetZNum - moveZ) * 0.07;
         boxGroup.position.z = moveZ;
         moveX += (mouseX - moveX - window.innerWidth / 2) * 0.05;
         moveY += (mouseY - moveY - window.innerWidth / 2) * 0.05;
@@ -328,8 +317,11 @@ export default function example() {
     const progressBar = document.querySelector('.bar');
     let perNum = 0;
 
+    let currentPage = 0;
+    let prevScroll;
     const scrollFunc = () => {
         if(checkProjectShow == false) {
+            prevScroll = scrolly
             scrolly = window.scrollY;
             pageNum = Math.ceil(scrolly / 100);
             targetZNum = depthNum * pageNum;
@@ -337,8 +329,20 @@ export default function example() {
             perNum = Math.ceil(
                 (scrolly / (document.body.offsetHeight - window.innerHeight)) * 100
             );
-
             progressBar.style.width = perNum + '%'
+            
+            if(currentPage !== pageNum) {
+                gsap.to(
+                    camera.position, {
+                        x : meshes[pageNum].position.x,
+                        y : meshes[pageNum].position.y,
+                        z : meshes[pageNum].position.z + 30,
+                        duration : 1
+                    }
+                )
+                currentPage = pageNum;
+            }
+
         }
     };
 
@@ -470,7 +474,7 @@ export default function example() {
 
             gsap.to(
                 hoverMesh.position, {
-                    z : item.object.position.z + 0.1,
+                    z : item.object.position.z + 0.5,
                     duration : 0.5
                 }
             )
