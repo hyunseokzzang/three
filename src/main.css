@@ -13,6 +13,11 @@ html {
 	box-sizing: border-box;
 }
 
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
 #three-canvas {
 	position: fixed;
 	left: 0;
@@ -52,6 +57,25 @@ html {
 	padding-top: 13.4rem;
 }
 
+.project-util {
+	height: 13.4rem;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	max-width: 192rem;
+	width: 100%;
+}
+
+.project-util strong {
+	color: #BCBCBC;
+	font-size: 1.4rem;
+}
+
 .project-detail {
 	width: 140rem;
 	height: 100%;
@@ -61,20 +85,27 @@ html {
 
 .project-detail-title {
 	width: 32%;
+	height: calc(100vh - 26.8rem);
 	padding-right: 6rem;
 	color: #fff;
 	display: flex;
 	flex-direction: column;
-	padding-top: 13.4rem;
+	justify-content: space-between;
 }
 
-.project-detail-title img {
+.project-detail-title .logo {
 	position: fixed;
 	bottom: 0;
 	left: 25%;
 }
 
-.project-detail-title strong {
+.project-detail-title-info {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.project-detail-title-info strong {
 	font-size: 1.4rem;
 	opacity: 0.4;
 	margin-top: 5.8rem;
@@ -82,13 +113,27 @@ html {
 	font-weight: 400;
 }
 
-.project-detail-title strong:first-of-type {
+.project-detail-title-info strong:first-of-type {
 	margin-top: 0;
 }
 
-.project-detail-title div {
+.project-detail-title-info div {
 	font-size: 1.8rem;
+	color: #fff;
+	text-decoration: none;
 }
+
+.project-detail-title-info .home {
+	margin-top: auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 5.5rem;
+	height: 5.5rem;
+	border-radius: 50%;
+	background: #000;
+}
+
 
 .project-detail-title-topic {
 	font-size: 2.5rem !important;
@@ -102,13 +147,6 @@ html {
 
 .project-detail-info img {
 	width: 100%;
-}
-
-.back {
-	position: fixed;
-	top: 0;
-	right: 0;
-	width: 100px;
 }
 
 .progress {

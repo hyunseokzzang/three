@@ -78,6 +78,7 @@ export default function example() {
             this.background = info.background || 'gray'; 
             this.desc = info.desc;
             this.year = info.year;
+            this.url = info.url;
             this.thumb = `./images/project/thumb/${this.name}.jpg` || './images/project/thumb/sample.jpg',
             this.hover = `./images/project/hover/${this.name}.png` || './images/project/hover/sample.png';
             this.main = `./images/project/main/${this.name}.jpg` || './images/project/hover/sample.jpg';
@@ -91,84 +92,99 @@ export default function example() {
             head : '국립전주박물관',
             desc : '박물관 뉴스레터 제작',
             year : '2022',
+            url : 'https://jeonju.museum.go.kr/korean/'
         },
         {
             name : 'engineering',
             head : '한국과학기술원',
             desc : '카이스트 공과대학 뉴스레터 제작',
             year : '2022',
+            url : 'https://engineering.kaist.ac.kr/'
         },
         {
             name : 'kimm',
             head : '한국기계연구원',
             desc : '영문웹진 제작',
             year : '2022',
+            url : 'https://www.kimm.re.kr/eng'
         },
         {
             name : 'djbea',
             head : '대전일자리경제진흥원',
             desc : '홈페이지 사용자 만족도 조사',
             year : '2022',
+            url : 'https://www.djbea.or.kr/'
         },
         {
             name : 'khidi',
             head : '한국보건산업진흥원',
             desc : '의료기기산업 주간뉴스레터 구독 이벤트홍보',
             year : '2022',
+            url : 'https://jeonju.museum.go.kr/korean/'
         },
         {
             name : 'innopolis',
             head : '연구개발특구진흥재단',
             desc : '연구개발특구진흥재단 메타버스 구축',
             year : '2022',
+            url : 'https://app.gather.town/app/GQFWhh0p1zTGUpYf/INNOPOLIS'
         },
         {
             name : 'doksa',
             head : '안정성평가연구소',
             desc : 'KIT 국가독성정책센터 홈페이지 구축',
             year : '2022',
+            url : 'https://www.kitox.re.kr/doksa/'
         },
         {
             name : 'brainz',
             head : '브레인즈컴퍼니',
             desc : '브레인즈컴퍼니 홈페이지 구축',
             year : '2022',
+            url : 'https://www.brainz.co.kr/'
         },
         {
             name : 'hit',
             head : '대전보건대학교',
             desc : '대전보건대학교 입학사이트 구축',
             year : '2022',
+            background : '#00204A',
+            url : 'https://ipsi.hit.ac.kr/consult'
         },
         {
             name : 'kigam',
             head : '한국지질자원연구원',
             desc : '한국지질자원연구원 홈페이지 통합유지보수',
             year : '2022',
+            url : 'https://www.kigam.re.kr'
         },
         {
             name : 'knfc',
             head : '한국원자력연료',
             desc : '한국원자력연료 홈페이지 유지보수',
             year : '2022',
+            url : 'https://www.knfc.co.kr/mps'
         },
         {
             name : 'kcpass',
             head : '중앙사회서비스원',
             desc : '중앙사회서비스원 홈페이지 유지보수',
             year : '2022',
+            url : 'https://www.kcpass.or.kr/mps'
         },
         {
             name : 'diwc',
             head : '대덕복지센터',
             desc : '대덕복지센터 웹호스팅 및 보안인증서 갱신',
             year : '2022',
+            url : 'https://diwc.or.kr/'
         },
         {
             name : 'kribb',
             head : '한국생명공학연구원',
             desc : '한국생명공학연구원 대표홈페이지 웹접근성 인증마크 갱신',
             year : '2022',
+            url : 'https://www.kribb.re.kr/kor'
         },
     ];
 
@@ -181,7 +197,8 @@ export default function example() {
                 head : projectList[i].head,
                 background : projectList[i].background,
                 desc : projectList[i].desc,
-                year : projectList[i].year
+                year : projectList[i].year,
+                url : projectList[i].url
             })
         )
     }
@@ -249,6 +266,7 @@ export default function example() {
         thumbMesh.background = projectResult[i].background;
         thumbMesh.desc = projectResult[i].desc;
         thumbMesh.year = projectResult[i].year;
+        thumbMesh.url = projectResult[i].url;
         thumbMesh.logo = projectResult[i].logo;
 
 
@@ -318,10 +336,8 @@ export default function example() {
     let perNum = 0;
 
     let currentPage = 0;
-    let prevScroll;
     const scrollFunc = () => {
         if(checkProjectShow == false) {
-            prevScroll = scrolly
             scrolly = window.scrollY;
             pageNum = Math.ceil(scrolly / 100);
             targetZNum = depthNum * pageNum;
@@ -401,22 +417,34 @@ export default function example() {
         project = makeElement('div');
         project.classList.add('project');
         project.style.background = item.object.background;
+        project.innerHTML = `
+            <div class="project-util">
+                <strong>MAINTENANCE EXPRIENCE</strong>
+                <strong>WEBSITE PROJECT</strong>
+                <strong><a href="#" class="back">BACK</a></strong>
+            </div>
+        `
         projectDetail = makeElement('div');
         projectDetail.classList.add('project-detail');
         projectHead = makeElement('div');
         projectHead.classList.add('project-detail-title');
         projectHead.innerHTML = `
-            <strong>PROJECT.</strong>
-            <div class="project-detail-title-topic">${item.object.head}</div>
-            <strong>Detail</strong>
-            <div>${item.object.desc}</div>
-            <strong>RELEASE DATE</strong>
-            <div>${item.object.year}</div>
-            <img src="${item.object.logo}">
+            <div class="project-detail-title-info">
+                <strong>PROJECT.</strong>
+                <div class="project-detail-title-topic">${item.object.head}</div>
+                <strong>Detail</strong>
+                <div>${item.object.desc}</div>
+                <strong>RELEASE DATE</strong>
+                <div>${item.object.year}</div>
+                <a href="${item.object.url}" target="_blank" title="새창으로 열림" rel="noopener noreferrer" class="home">
+                    <img src="./images/layout/home.png"> 
+                </a>
+            </div>
+            <img src="${item.object.logo}" class="logo">
         `;
-        projectLogo = projectHead.querySelector('img');
+        projectLogo = projectHead.querySelector('.logo');
         projectLogo.onerror = function() {
-            this.src = './images/project/logo/sample.png'
+            this.src = './images/project/logo/hit.png'
         }
         projectContainer = makeElement('div');
         projectContainer.classList.add('project-detail-info');
@@ -436,7 +464,7 @@ export default function example() {
                 scrollTrigger : {
                     trigger : projectHead,
                     endTrigger : projectContainer,
-                    start : 'top top',
+                    start : 'top-=134 top',
                     pin : true,
                     pinSpacing : false,
                     scrub : true,
@@ -445,10 +473,10 @@ export default function example() {
             }
         )
 
-        const closeProject = makeElement('button');
-        closeProject.classList.add('back');
-        closeProject.innerHTML = '돌아가 !';
-        project.appendChild(closeProject);
+        // const closeProject = makeElement('button');
+        // closeProject.classList.add('back');
+        // closeProject.innerHTML = '돌아가 !';
+        // project.appendChild(closeProject);
         document.body.appendChild(project);
         
         gsap.from(
@@ -461,7 +489,9 @@ export default function example() {
         checkProjectShow = true;
         document.body.style.overflow = 'hidden';
 
-        document.querySelector('.back').addEventListener('click', function () {
+        document.querySelector('.back').addEventListener('click', function (e) {
+            e.preventDefault();
+
             gsap.to(
                 project, {
                     opacity: 0,
@@ -565,7 +595,7 @@ export default function example() {
     })
 
     const mouseParticle = () => {
-        const particleCanvas = document.getElementById('particle-canvas');
+        const particleCanvas = document.getElementByIfd('particle-canvas');
         const ctx = particleCanvas.getContext('2d');
         const makes = [];
         const mouse = {
