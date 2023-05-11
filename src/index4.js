@@ -65,7 +65,7 @@ export default function example() {
 
     // 그리기
 
-    const depthNum = 50; //박스와 박스 사이 z값. 깊이
+    const depthNum = 20; //박스와 박스 사이 z값. 깊이
     let targetZNum = 0; //
     let moveZ = 0;
     const boxGroup = new THREE.Group();
@@ -79,7 +79,7 @@ export default function example() {
             this.desc = info.desc;
             this.year = info.year;
             this.url = info.url;
-            this.thumb = `./images/project/thumb/${this.name}.jpg` || './images/project/thumb/sample.jpg',
+            this.thumb = `./images/project/hover/${this.name}.png` || './images/project/thumb/sample.jpg',
             this.hover = `./images/project/hover/${this.name}.png` || './images/project/hover/sample.png';
             this.main = `./images/project/main/${this.name}.jpg` || './images/project/hover/sample.jpg';
             this.logo = `./images/project/logo/${this.name}.png` || './images/project/logo/sample.png'; 
@@ -141,6 +141,7 @@ export default function example() {
             head : '브레인즈컴퍼니',
             desc : '브레인즈컴퍼니 홈페이지 구축',
             year : '2022',
+            background:'#092D8D',
             url : 'https://www.brainz.co.kr/'
         },
         {
@@ -163,6 +164,7 @@ export default function example() {
             head : '한국원자력연료',
             desc : '한국원자력연료 홈페이지 유지보수',
             year : '2022',
+            background : '#BB161F',
             url : 'https://www.knfc.co.kr/mps'
         },
         {
@@ -170,6 +172,7 @@ export default function example() {
             head : '중앙사회서비스원',
             desc : '중앙사회서비스원 홈페이지 유지보수',
             year : '2022',
+            background : 'linear-gradient(-45deg, #0099DB, #8BB929)',
             url : 'https://www.kcpass.or.kr/mps'
         },
         {
@@ -211,57 +214,40 @@ export default function example() {
         let thumbMaterial;
         let video;
         let videoSource;
-        let hoverGeometry;
-        let hoverMaterial;
-        let hoverMesh;
+        // let hoverGeometry;
+        // let hoverMaterial;
+        // let hoverMesh;
         let thumbPath;
         let hoverPath;
         thumbGeometry = new THREE.BoxGeometry(24, 24, 0.1);
-        // if(projectInformation[i].type == 'mp4') {
-            
-        //     video = document.createElement('video');
-        //     video.muted = true;
-        //     video.autoplay = true;
-        //     video.loop = true;
-        //     // video.play();
-        //     videoSource = document.createElement('source');
-        //     videoSource.src = `./images/project/thumb/img${i}.${projectInformation[i].type}`;
-        //     video.appendChild(videoSource);
-
-        //     texture = new THREE.VideoTexture( video );
-
-        // } else {
-        //     texture = textureLoader.load(
-        //         `./images/project/thumb/img${i}.${projectInformation[i].type}`,
-        //     );
-        // }
+        
         thumbPath =  `${projectResult[i].thumb}`;
-        hoverPath = `${projectResult[i].hover}`;
+        // hoverPath = `${projectResult[i].hover}`;
 
         thumbTexture = textureLoader.load(
                 thumbPath,    
         );
 
-        hoverTexture = textureLoader.load(
-            hoverPath,
-        );
+        // hoverTexture = textureLoader.load(
+        //     hoverPath,
+        // );
 
         thumbMaterial = new THREE.MeshPhongMaterial({
             map: thumbTexture,
             transparent : true
         });
 
-        hoverMaterial = new THREE.MeshPhongMaterial({
-            map : hoverTexture,
-            transparent : true,
-        })
+        // hoverMaterial = new THREE.MeshPhongMaterial({
+        //     map : hoverTexture,
+        //     transparent : true,
+        // })
 
         const thumbMesh = new THREE.Mesh(thumbGeometry, thumbMaterial);
 
-        hoverGeometry = new THREE.BoxGeometry(24, 24, 0.1);
-        hoverMesh = new THREE.Mesh(hoverGeometry, hoverMaterial);
+        // hoverGeometry = new THREE.BoxGeometry(24, 24, 0.1);
+        // hoverMesh = new THREE.Mesh(hoverGeometry, hoverMaterial);
         thumbMesh.head = projectResult[i].head;
-        thumbMesh.hover = hoverMesh;
+        // thumbMesh.hover = hoverMesh;
         thumbMesh.main = projectResult[i].main;
         thumbMesh.background = projectResult[i].background;
         thumbMesh.desc = projectResult[i].desc;
@@ -277,18 +263,13 @@ export default function example() {
         } else {
             x = -20
         }
-        let y = Math.random() * 40;
-        let z = -i * depthNum;
+        let y = -i * depthNum;
+        let z = 0;
         thumbMesh.position.set(x, y, z);
-        hoverMesh.position.set(x, y, z + 0.1);
-        boxGroup.add(thumbMesh, hoverMesh);
+        // hoverMesh.position.set(x, y, z + 0.1);
+        boxGroup.add(thumbMesh);
         meshes.push(thumbMesh);
 
-        gsap.to(
-            thumbMesh.hover.material,{
-                opacity : 0
-            } 
-        )
         
     };
 
@@ -311,8 +292,8 @@ export default function example() {
 
         // moveZ += (targetZNum - moveZ) * 0.07;
         boxGroup.position.z = moveZ;
-        moveX += (mouseX - moveX - window.innerWidth / 2) * 0.05;
-        moveY += (mouseY - moveY - window.innerWidth / 2) * 0.05;
+        // moveX += (mouseX - moveX - window.innerWidth / 2) * 0.05;
+        // moveY += (mouseY - moveY - window.innerWidth / 2) * 0.05;
         boxGroup.position.x = -(moveX / 50);
         boxGroup.position.y = moveY / 50;
 
@@ -350,9 +331,9 @@ export default function example() {
             if(currentPage !== pageNum) {
                 gsap.to(
                     camera.position, {
-                        x : meshes[pageNum].position.x,
+                        // x : meshes[pageNum].position.x,
                         y : meshes[pageNum].position.y,
-                        z : meshes[pageNum].position.z + 30,
+                        // z : meshes[pageNum].position.z + 30,
                         duration : 1
                     }
                 )
@@ -440,10 +421,10 @@ export default function example() {
                     <img src="./images/layout/home.png"> 
                 </a>
             </div>
-            <img src="${item.object.logo}" class="logo">
+            <span class="logo" style="background : ${item.object.background}"><img src="${item.object.logo}"></span>
         `;
         projectLogo = projectHead.querySelector('.logo');
-        projectLogo.onerror = function() {
+        projectLogo.querySelector('img').onerror = function() {
             this.src = './images/project/logo/hit.png'
         }
         projectContainer = makeElement('div');
@@ -522,62 +503,44 @@ export default function example() {
         raycaster.setFromCamera(mouse, camera);
         
         const intersects = raycaster.intersectObjects(meshes);
-        for (const item of intersects) {
 
-            const hoverMesh = item.object.hover;
+        if (intersects.length == 0) {
+            for(let i = 0; i < meshes.length; ++i) {
+                console.log(meshes[i]) 
+                gsap.to(
+                    meshes[i].rotation,
+                    {
+                        y : 0,
+                        duration : 1
+                    }
+                )
+            }
+        } else {
+            for (const item of intersects) {
+                let rotationValue = 0.75;
 
-            gsap.to(
-                item.object.material, {
-                    opacity : 0,
-                    duration : 0.5
+                if (item.object.position.x > 0) {
+                    rotationValue = -(rotationValue);
                 }
-            )
 
-            gsap.to(
-                hoverMesh.position, {
-                    z : item.object.position.z + 0.5,
-                    duration : 0.5
-                }
-            )
+                gsap.to(
+                    item.object.rotation,
+                    {
+                        y: rotationValue,
+                        duration: 0.5
+                    }
+                );
 
-            gsap.to(
-                hoverMesh.material, {
-                    opacity : 1,
-                    duration : 0.5
-                }
-            )
-
-            // break; // for문 종료
-        }
-        
-        if(intersects.length == 0){
-            for(let i = 0; i <= meshes.length; ++i) {
-                
-                    const hoverMesh = meshes[i].hover;
-                
-                    gsap.to(
-                        hoverMesh.position, {
-                            z : meshes[i].position.z,
-                            duration : 0.5
-                        }
-                    )
-        
-                    gsap.to(
-                        hoverMesh.material, {
-                            opacity : 0,
-                            duration : 0.5
-                        }
-                    )
-
-                    gsap.to(
-                        meshes[i].material, {
-                            opacity : 1,
-                            duration : 0.5
-                        }
-                    )
+                // gsap.to(
+                //     item.object.scale,
+                //     {
+                //         x : 0.75,
+                //         y : 0.75,
+                //         duration: 0.45,
+                //     }
+                // );
             }
         }
-
     }
 
     canvas.addEventListener('click', e => {

@@ -95,8 +95,12 @@ a {
 
 .project-detail-title .logo {
 	position: fixed;
-	bottom: 0;
-	left: 25%;
+	bottom: 10%;
+	right: 0;
+}
+
+.project-detail-title .logo img {
+	mix-blend-mode: multiply;
 }
 
 .project-detail-title-info {
