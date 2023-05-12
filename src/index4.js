@@ -45,18 +45,16 @@ export default function example() {
     // const controls = new OrbitControls(camera, renderer.domElement);
 
     // Light
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
     // const ambientLightGuide = new THREE.AmbientLightGuide();
-    // scene.add(ambientLight);
+    scene.add(ambientLight);
     
 
-    const directionalLight = new THREE.DirectionalLight('#fff', 0.5);
-    directionalLight.position.x = 0;
-    directionalLight.position.y = 50;
-    directionalLight.position.z = 30;
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1); 
+    directionalLight.position.set(0,0,1);
     directionalLight.castShadow = true;
     const directionalLightGuide = new THREE.DirectionalLightHelper(directionalLight);
-    scene.add(directionalLight);
+    // scene.add(directionalLight);
     // scene.add(directionalLightGuide)
 
     const textureLoader = new THREE.TextureLoader();
@@ -87,55 +85,55 @@ export default function example() {
     }
 
     const projectList = [
-        {
-            name : 'jeonju',
-            head : '국립전주박물관',
-            desc : '박물관 뉴스레터 제작',
-            year : '2022',
-            url : 'https://jeonju.museum.go.kr/korean/'
-        },
-        {
-            name : 'engineering',
-            head : '한국과학기술원',
-            desc : '카이스트 공과대학 뉴스레터 제작',
-            year : '2022',
-            url : 'https://engineering.kaist.ac.kr/'
-        },
-        {
-            name : 'kimm',
-            head : '한국기계연구원',
-            desc : '영문웹진 제작',
-            year : '2022',
-            url : 'https://www.kimm.re.kr/eng'
-        },
-        {
-            name : 'djbea',
-            head : '대전일자리경제진흥원',
-            desc : '홈페이지 사용자 만족도 조사',
-            year : '2022',
-            url : 'https://www.djbea.or.kr/'
-        },
-        {
-            name : 'khidi',
-            head : '한국보건산업진흥원',
-            desc : '의료기기산업 주간뉴스레터 구독 이벤트홍보',
-            year : '2022',
-            url : 'https://jeonju.museum.go.kr/korean/'
-        },
-        {
-            name : 'innopolis',
-            head : '연구개발특구진흥재단',
-            desc : '연구개발특구진흥재단 메타버스 구축',
-            year : '2022',
-            url : 'https://app.gather.town/app/GQFWhh0p1zTGUpYf/INNOPOLIS'
-        },
-        {
-            name : 'doksa',
-            head : '안정성평가연구소',
-            desc : 'KIT 국가독성정책센터 홈페이지 구축',
-            year : '2022',
-            url : 'https://www.kitox.re.kr/doksa/'
-        },
+        // {
+        //     name : 'jeonju',
+        //     head : '국립전주박물관',
+        //     desc : '박물관 뉴스레터 제작',
+        //     year : '2022',
+        //     url : 'https://jeonju.museum.go.kr/korean/'
+        // },
+        // {
+        //     name : 'engineering',
+        //     head : '한국과학기술원',
+        //     desc : '카이스트 공과대학 뉴스레터 제작',
+        //     year : '2022',
+        //     url : 'https://engineering.kaist.ac.kr/'
+        // },
+        // {
+        //     name : 'kimm',
+        //     head : '한국기계연구원',
+        //     desc : '영문웹진 제작',
+        //     year : '2022',
+        //     url : 'https://www.kimm.re.kr/eng'
+        // },
+        // {
+        //     name : 'djbea',
+        //     head : '대전일자리경제진흥원',
+        //     desc : '홈페이지 사용자 만족도 조사',
+        //     year : '2022',
+        //     url : 'https://www.djbea.or.kr/'
+        // },
+        // {
+        //     name : 'khidi',
+        //     head : '한국보건산업진흥원',
+        //     desc : '의료기기산업 주간뉴스레터 구독 이벤트홍보',
+        //     year : '2022',
+        //     url : 'https://jeonju.museum.go.kr/korean/'
+        // },
+        // {
+        //     name : 'innopolis',
+        //     head : '연구개발특구진흥재단',
+        //     desc : '연구개발특구진흥재단 메타버스 구축',
+        //     year : '2022',
+        //     url : 'https://app.gather.town/app/GQFWhh0p1zTGUpYf/INNOPOLIS'
+        // },
+        // {
+        //     name : 'doksa',
+        //     head : '안정성평가연구소',
+        //     desc : 'KIT 국가독성정책센터 홈페이지 구축',
+        //     year : '2022',
+        //     url : 'https://www.kitox.re.kr/doksa/'
+        // },
         {
             name : 'brainz',
             head : '브레인즈컴퍼니',
@@ -152,13 +150,13 @@ export default function example() {
             background : '#00204A',
             url : 'https://ipsi.hit.ac.kr/consult'
         },
-        {
-            name : 'kigam',
-            head : '한국지질자원연구원',
-            desc : '한국지질자원연구원 홈페이지 통합유지보수',
-            year : '2022',
-            url : 'https://www.kigam.re.kr'
-        },
+        // {
+        //     name : 'kigam',
+        //     head : '한국지질자원연구원',
+        //     desc : '한국지질자원연구원 홈페이지 통합유지보수',
+        //     year : '2022',
+        //     url : 'https://www.kigam.re.kr'
+        // },
         {
             name : 'knfc',
             head : '한국원자력연료',
@@ -175,20 +173,20 @@ export default function example() {
             background : 'linear-gradient(-45deg, #0099DB, #8BB929)',
             url : 'https://www.kcpass.or.kr/mps'
         },
-        {
-            name : 'diwc',
-            head : '대덕복지센터',
-            desc : '대덕복지센터 웹호스팅 및 보안인증서 갱신',
-            year : '2022',
-            url : 'https://diwc.or.kr/'
-        },
-        {
-            name : 'kribb',
-            head : '한국생명공학연구원',
-            desc : '한국생명공학연구원 대표홈페이지 웹접근성 인증마크 갱신',
-            year : '2022',
-            url : 'https://www.kribb.re.kr/kor'
-        },
+        // {
+        //     name : 'diwc',
+        //     head : '대덕복지센터',
+        //     desc : '대덕복지센터 웹호스팅 및 보안인증서 갱신',
+        //     year : '2022',
+        //     url : 'https://diwc.or.kr/'
+        // },
+        // {
+        //     name : 'kribb',
+        //     head : '한국생명공학연구원',
+        //     desc : '한국생명공학연구원 대표홈페이지 웹접근성 인증마크 갱신',
+        //     year : '2022',
+        //     url : 'https://www.kribb.re.kr/kor'
+        // },
     ];
 
     const projectResult = [];
@@ -219,7 +217,7 @@ export default function example() {
         // let hoverMesh;
         let thumbPath;
         let hoverPath;
-        thumbGeometry = new THREE.BoxGeometry(24, 24, 0.1);
+        thumbGeometry = new THREE.PlaneGeometry(24, 24);
         
         thumbPath =  `${projectResult[i].thumb}`;
         // hoverPath = `${projectResult[i].hover}`;
@@ -227,14 +225,18 @@ export default function example() {
         thumbTexture = textureLoader.load(
                 thumbPath,    
         );
+        thumbTexture.magFilter = THREE.NearestFilter;
+        thumbTexture.minFilter = THREE.LinearMipMapLinearFilter;
 
         // hoverTexture = textureLoader.load(
         //     hoverPath,
         // );
 
-        thumbMaterial = new THREE.MeshPhongMaterial({
+        thumbMaterial = new THREE.MeshBasicMaterial({
             map: thumbTexture,
-            transparent : true
+            transparent : true,
+            // color: 0xffffff,
+            // specular: 0x000000,
         });
 
         // hoverMaterial = new THREE.MeshPhongMaterial({
