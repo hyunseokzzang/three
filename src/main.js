@@ -1,3 +1,6 @@
-import example from './index4';
+import example from './index5';
 
-example();
+$(function(){
+
+    example();
+})
