@@ -1,8 +1,11 @@
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import dat from 'dat.gui';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
 
 export default function example() {
-    // Renderer
     gsap.registerPlugin(ScrollTrigger);
 
     class Project {
@@ -274,10 +277,12 @@ export default function example() {
     // })
 
     $('[data-tilt]').tilt({
+        maxTilt :-20,
         glare: true,
-        maxGlare: .5,
-        perspective:600,
-        scale : 1.15
+        maxGlare: 3,
+        perspective:350,
+        scale : 0.85,
+        speed : 750,
     })
 
     gsap.to(
@@ -291,4 +296,155 @@ export default function example() {
             filter : 'hue-rotate(360deg)'
         }
     )
+
+    // Renderer
+    const canvas = document.querySelector('#three-canvas');
+	const renderer = new THREE.WebGLRenderer({
+		canvas,
+		antialias: true
+	});
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1);
+
+	// Scene
+	const scene = new THREE.Scene();
+
+	// Camera
+	const camera = new THREE.PerspectiveCamera(
+		75,
+		window.innerWidth / window.innerHeight,
+		0.1,
+		1000
+	);
+	camera.position.x = 1;
+	camera.position.y = 1;
+	camera.position.z = -2;
+	scene.add(camera);
+
+	// Light
+	const ambientLight = new THREE.AmbientLight('white', 0.5);
+	scene.add(ambientLight);
+
+	const directionalLight = new THREE.DirectionalLight('white', 1);
+	directionalLight.position.x = 1;
+	directionalLight.position.z = 2;
+	scene.add(directionalLight);
+
+    //controls 
+    // const controls = new OrbitControls(camera, canvas)
+
+	// Mesh
+	const geometry = new THREE.BoxGeometry(1, 1, 1);
+	const material = new THREE.MeshStandardMaterial({
+		color: 'seagreen'
+	});
+	const mesh = new THREE.Mesh(geometry, material);
+	// scene.add(mesh);
+
+	// AxesHelper
+	const axesHelper = new THREE.AxesHelper(3);
+	scene.add(axesHelper);
+
+	// GridHelper
+	const gridHelper = new THREE.GridHelper(10);
+	scene.add(gridHelper);
+
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.load(
+        './images/the_bathroom_free.glb', 
+        glb => {
+            const environment = glb.scene.children[0];
+            scene.add(environment)
+            console.log(environment)
+        }
+    )
+
+    const boxes = gsap.utils.toArray('.item');
+    const positions = [
+        {
+            x : 2,
+            y : 2, 
+            z: 3
+        },
+        {
+            x : -5,
+            y : 10, 
+            z: 4
+        },
+        {
+            x : -1,
+            y : 3, 
+            z: -2
+        },
+        {
+            x : -4,
+            y : 3, 
+            z: 2
+        }
+    ];
+    boxes.forEach((box , i) => {
+        gsap.to(
+            camera.position, {
+                scrollTrigger : {
+                    trigger : box,
+                    start : 'top center',
+                    end : 'bottom bottom',
+                    markers : true,
+                    // scrub : true,
+                },
+                duration : 2,
+                x :  positions[i].x,
+                y : positions[i].y,
+                z : positions[i].y
+            }
+        )
+
+        // gsap.to(
+        //     camera.rotation, {
+        //         scrollTrigger : {
+        //             trigger : box,
+        //             start : 'top center',
+        //             end : 'bottom bottom',
+        //             markers : true,
+        //             // scrub : true,
+        //         },
+        //         duration : 5,
+        //         x :  positions[i].x,
+        //         y : positions[i].y,
+        //         z : positions[i].y
+        //     }
+        // )
+    })
+
+    
+	// Dat GUI
+	const gui = new dat.GUI();
+	gui.add(camera.position, 'x', -50, 50, 1).name('카메라 X');
+	gui.add(camera.position, 'y', -50, 50, 1).name('카메라 Y');
+	gui.add(camera.position, 'z', -50, 50, 1).name('카메라 Z');
+
+	// 그리기
+	const clock = new THREE.Clock();
+
+	function draw() {
+		const delta = clock.getDelta();
+
+		// mesh.position.set(-1, 2, 0);
+
+		renderer.render(scene, camera);
+		renderer.setAnimationLoop(draw);
+	}
+
+	function setSize() {
+		camera.aspect = window.innerWidth / window.innerHeight;
+		camera.updateProjectionMatrix();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.render(scene, camera);
+	}
+
+	// 이벤트
+	window.addEventListener('resize', setSize);
+
+	draw();
+
 }
